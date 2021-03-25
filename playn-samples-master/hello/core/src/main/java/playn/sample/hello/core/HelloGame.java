@@ -46,7 +46,7 @@ public class HelloGame extends SceneGame {
       if (status) {
       imgPath = "images/floorSmall.png";
     } else {
-      imgPath = "images/SmallFloorActive.png";
+      imgPath = "images/smallmarine.png";
     };
       Image image = plat.assets().getImage(imgPath);
       final ImageLayer layer = new ImageLayer(image);
