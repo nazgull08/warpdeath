@@ -37,24 +37,6 @@ public class HelloGame extends SceneGame {
   int floorw = 32;
   int floorh = 32;
 
-  public class Pea {
-    // choose a semi-random angular velocity
-    private final float angVel = (plat.tick() % 20 - 5) / 2000f;
-
-    public Pea(final GroupLayer peaLayer, float x, float y) {
-      Image image = plat.assets().getImage("images/floorSmall.png");
-      final ImageLayer layer = new ImageLayer(image);
-      layer.setOrigin(ImageLayer.Origin.UL);
-      peaLayer.addAt(layer, x, y);
-
-      // connect to the paint signal to animate our rotation
-      paint.connect(new Slot<Clock>() {
-        @Override public void onEmit (Clock clock) {
-          layer.setRotation(clock.tick * angVel);
-        }
-      });
-    }
-  }
 
 
   public class Floor {
