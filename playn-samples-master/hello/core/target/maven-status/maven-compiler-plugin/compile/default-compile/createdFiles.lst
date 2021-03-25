@@ -1,3 +1,5 @@
 playn\sample\hello\core\HelloGame$1.class
 playn\sample\hello\core\HelloGame.class
 playn\sample\hello\core\HelloGame$Floor.class
+playn\sample\hello\core\HelloGame$Unit.class
+playn\sample\hello\core\HelloGame$UnitInfo.class
