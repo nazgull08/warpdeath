@@ -89,10 +89,10 @@ public class HelloGame extends SceneGame {
     final GroupLayer starShiplayer = new GroupLayer();
     rootLayer.add(starShiplayer);
 
-    int numList[][]=new int[20][20];
-    for (int i = 0; i < 20; i++) {
-      for (int j = 0; j < 20; j++) {
-        numList[i][j]=0;
+    int numList[][]=new int[5][5];
+    for (int i = 2; i < 5; i++) {
+      for (int j = 2; j < 5; j++) {
+        numList[i][j]=2;
           new Starship(starShiplayer, i*30, j*30, true);
       }
     }
@@ -109,8 +109,8 @@ public class HelloGame extends SceneGame {
           String y=String.valueOf(event.y());
           System.out.printf("x: %s \t y: %s   \n", x, y);
 
-          for (int i = 0; i < 20; i++) {
-            for (int j = 0; j < 20; j++) {
+          for (int i = 2; i < 5; i++) {
+            for (int j = 2; j < 5; j++) {
               if ( (event.x() >= i*30) && (event.x() <= (i+1)*30) && (event.y() >= j*30) && (event.y() <= (j+1)*30))
               {  new Starship(starShiplayer, i*30, j*30, false);}
             }
