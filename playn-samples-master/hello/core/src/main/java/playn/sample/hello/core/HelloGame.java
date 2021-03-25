@@ -30,7 +30,7 @@ public class HelloGame extends SceneGame {
 
   public class Pea {
     // choose a semi-random angular velocity
-    private final float angVel = (plat.tick() % 10 - 5) / 1000f;
+    private final float angVel = (plat.tick() % 20 - 5) / 2000f;
 
     public Pea(final GroupLayer peaLayer, float x, float y) {
       Image image = plat.assets().getImage("images/floorSmall.png");
@@ -85,9 +85,9 @@ public class HelloGame extends SceneGame {
     final GroupLayer starShiplayer = new GroupLayer();
     rootLayer.add(starShiplayer);
 
-    int numList[][]=new int[10][10];
-    for (int i = 0; i < 10; i++) {
-      for (int j = 0; j < 10; j++) {
+    int numList[][]=new int[20][20];
+    for (int i = 0; i < 20; i++) {
+      for (int j = 0; j < 20; j++) {
         numList[i][j]=0;
           new Starship(starShiplayer, i*30, j*30, true);
       }
@@ -105,8 +105,8 @@ public class HelloGame extends SceneGame {
           String y=String.valueOf(event.y());
           System.out.printf("x: %s \t y: %s   \n", x, y);
 
-          for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+          for (int i = 0; i < 20; i++) {
+            for (int j = 0; j < 20; j++) {
               if ( (event.x() >= i*30) && (event.x() <= (i+1)*30) && (event.y() >= j*30) && (event.y() <= (j+1)*30))
               {  new Starship(starShiplayer, i*30, j*30, false);}
             }
