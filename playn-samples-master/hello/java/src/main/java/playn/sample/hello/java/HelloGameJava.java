@@ -21,7 +21,11 @@ import playn.sample.hello.core.HelloGame;
 public class HelloGameJava {
 
   public static void main(String[] args) {
-    LWJGLPlatform plat = new LWJGLPlatform(new LWJGLPlatform.Config());
+    LWJGLPlatform.Config config = new LWJGLPlatform.Config();
+    config.width = 1920;
+    config.height = 1080;
+    config.appName = "Void Death";
+    LWJGLPlatform plat = new LWJGLPlatform(config);
     new HelloGame(plat);
     plat.start();
   }
