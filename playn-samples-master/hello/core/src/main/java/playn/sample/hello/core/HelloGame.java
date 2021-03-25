@@ -15,8 +15,6 @@
  */
 
       // для запуска!!!! (mvn test -Pjava)
-
-
 package playn.sample.hello.core;
 
 import react.Slot;
@@ -32,6 +30,13 @@ import playn.scene.SceneGame;
 
 public class HelloGame extends SceneGame {
 
+  int masx = 10;
+  int masy = 10;
+  int ii = 0;
+  int jj = 0;
+  int floorw = 32;
+  int floorh = 32;
+
   public class Pea {
     // choose a semi-random angular velocity
     private final float angVel = (plat.tick() % 20 - 5) / 2000f;
@@ -39,7 +44,7 @@ public class HelloGame extends SceneGame {
     public Pea(final GroupLayer peaLayer, float x, float y) {
       Image image = plat.assets().getImage("images/floorSmall.png");
       final ImageLayer layer = new ImageLayer(image);
-      layer.setOrigin(ImageLayer.Origin.CENTER);
+      layer.setOrigin(ImageLayer.Origin.UL);
       peaLayer.addAt(layer, x, y);
 
       // connect to the paint signal to animate our rotation
@@ -59,11 +64,11 @@ public class HelloGame extends SceneGame {
       if (status) {
       imgPath = "images/floorSmall.png";
     } else {
-      imgPath = "images/floorSmall1.png";
+      imgPath = "images/SmallFloorActive.png";
     };
       Image image = plat.assets().getImage(imgPath);
       final ImageLayer layer = new ImageLayer(image);
-      layer.setOrigin(ImageLayer.Origin.CENTER);
+      layer.setOrigin(ImageLayer.Origin.UL);
       starShiplayer.addAt(layer, x, y);
     }
   }
@@ -89,11 +94,11 @@ public class HelloGame extends SceneGame {
     final GroupLayer starShiplayer = new GroupLayer();
     rootLayer.add(starShiplayer);
 
-    int numList[][]=new int[5][5];
-    for (int i = 2; i < 5; i++) {
-      for (int j = 2; j < 5; j++) {
-        numList[i][j]=2;
-          new Starship(starShiplayer, i*30, j*30, true);
+    int numList[][]=new int[masx][masy];
+    for (int i = ii; i < masx; i++) {
+      for (int j = jj; j < masy; j++) {
+        numList[i][j]=0;
+          new Starship(starShiplayer, i*floorw, j*floorh, true);
       }
     }
 
@@ -109,10 +114,12 @@ public class HelloGame extends SceneGame {
           String y=String.valueOf(event.y());
           System.out.printf("x: %s \t y: %s   \n", x, y);
 
-          for (int i = 2; i < 5; i++) {
-            for (int j = 2; j < 5; j++) {
-              if ( (event.x() >= i*30) && (event.x() <= (i+1)*30) && (event.y() >= j*30) && (event.y() <= (j+1)*30))
-              {  new Starship(starShiplayer, i*30, j*30, false);}
+
+
+          for (int i = ii; i < masx; i++) {
+            for (int j = jj; j < masy; j++) {
+              if ( (event.x() >= i*floorw) && (event.x() <= (i+1)*floorw) && (event.y() >= j*floorh) && (event.y() <= (j+1)*floorh))
+              {  new Starship(starShiplayer, i*floorw, j*floorh, false);}
             }
           }
 //          new Pea(peaLayer, event.x(), event.y());
