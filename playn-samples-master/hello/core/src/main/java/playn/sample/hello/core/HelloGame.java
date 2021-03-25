@@ -57,9 +57,9 @@ public class HelloGame extends SceneGame {
   }
 
 
-  public class Starship {
+  public class Floor {
 
-    public Starship(final GroupLayer starShiplayer, float x, float y, boolean status) {
+    public Floor(final GroupLayer Floorlayer, float x, float y, boolean status) {
       String imgPath = "aaa";
       if (status) {
       imgPath = "images/floorSmall.png";
@@ -69,7 +69,7 @@ public class HelloGame extends SceneGame {
       Image image = plat.assets().getImage(imgPath);
       final ImageLayer layer = new ImageLayer(image);
       layer.setOrigin(ImageLayer.Origin.UL);
-      starShiplayer.addAt(layer, x, y);
+      Floorlayer.addAt(layer, x, y);
     }
   }
 
@@ -91,14 +91,14 @@ public class HelloGame extends SceneGame {
     rootLayer.add(bgLayer);
 
     // create a group layer to hold the peas
-    final GroupLayer starShiplayer = new GroupLayer();
-    rootLayer.add(starShiplayer);
+    final GroupLayer Floorlayer = new GroupLayer();
+    rootLayer.add(Floorlayer);
 
     int numList[][]=new int[masx][masy];
     for (int i = ii; i < masx; i++) {
       for (int j = jj; j < masy; j++) {
         numList[i][j]=0;
-          new Starship(starShiplayer, i*floorw, j*floorh, true);
+          new Floor(Floorlayer, i*floorw, j*floorh, true);
       }
     }
 
@@ -119,7 +119,7 @@ public class HelloGame extends SceneGame {
           for (int i = ii; i < masx; i++) {
             for (int j = jj; j < masy; j++) {
               if ( (event.x() >= i*floorw) && (event.x() <= (i+1)*floorw) && (event.y() >= j*floorh) && (event.y() <= (j+1)*floorh))
-              {  new Starship(starShiplayer, i*floorw, j*floorh, false);}
+              {  new Floor(Floorlayer, i*floorw, j*floorh, false);}
             }
           }
 //          new Pea(peaLayer, event.x(), event.y());
