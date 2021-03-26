@@ -48,7 +48,14 @@ public class HelloGame extends SceneGame {
   int hp = 45; // 1-15, 16-30, 31-45;
   int energy = 10;
   int mind = 100;
-  
+  int morale = 600;
+  int hunger = 100;
+  int thirst = 100;
+  int fireres = 100;
+  int electres = 100;
+  int bleedres = 100;
+  int stunres = 100;
+
 
 
   Graphics gfx = plat.graphics();
@@ -97,12 +104,33 @@ public class HelloGame extends SceneGame {
   String hps = "hp: " + String.valueOf(hp); // преобразуем число в строку
   String energys = "energy: " + String.valueOf(energy);
   String minds = "mind: " + String.valueOf(mind);
+  String morales = "morale: " + String.valueOf(morale);
+  String hungers = "hunger: " + String.valueOf(hunger);
+  String thirsts = "thirst: " + String.valueOf(thirst);
+  String fireress = "fireres: " + String.valueOf(fireres);
+  String electress = "electres: " + String.valueOf(electres);
+  String bleedress = "bleedres: " + String.valueOf(bleedres);
+  String stunress = "stunres: " + String.valueOf(stunres);
   TextLayout layoutHp = gfx.layoutText(hps, format); // получаем надпись
   TextLayout layoutEnergy = gfx.layoutText(energys, format); // получаем надпись
   TextLayout layoutMind = gfx.layoutText(minds, format); // получаем надпись
+  TextLayout layoutMorale = gfx.layoutText(morales, format); // получаем надпись
+  TextLayout layoutHunger = gfx.layoutText(hungers, format); // получаем надпись
+  TextLayout layoutThirst = gfx.layoutText(thirsts, format); // получаем надпись
+  TextLayout layoutFireres = gfx.layoutText(fireress, format); // получаем надпись
+  TextLayout layoutElectres = gfx.layoutText(electress, format); // получаем надпись
+  TextLayout layoutBleedres = gfx.layoutText(bleedress, format); // получаем надпись
+  TextLayout layoutStunres = gfx.layoutText(stunress, format); // получаем надпись
   Layer layerHP = createTextLayer(layoutHp, 0xFFFF0000); // запекаем надпись в картинку
   Layer layerEnergy = createTextLayer(layoutEnergy, 0xFFAFEEEE); // запекаем надпись в картинку
   Layer layerMind = createTextLayer(layoutMind, 0xFF000000); // запекаем надпись в картинку
+  Layer layerMorale = createTextLayer(layoutMorale, 0xFF0000FF); // запекаем надпись в картинку
+  Layer layerHunger = createTextLayer(layoutHunger, 0xFF008000); // запекаем надпись в картинку
+  Layer layerThirst = createTextLayer(layoutThirst, 0xFF00FFFF); // запекаем надпись в картинку
+  Layer layerFireres = createTextLayer(layoutFireres, 0xFFD2691E); // запекаем надпись в картинку
+  Layer layerElectres = createTextLayer(layoutElectres, 0xFFFFFF00); // запекаем надпись в картинку
+  Layer layerBleedres = createTextLayer(layoutBleedres, 0xFF8B0000); // запекаем надпись в картинку
+  Layer layerStunres = createTextLayer(layoutStunres, 0xFFFF8C00); // запекаем надпись в картинку
 
 
 
@@ -112,7 +140,7 @@ public class HelloGame extends SceneGame {
     return new ImageLayer(canvas.toTexture()); // запекаем холст, возвращаем в виде слоя
   }
 
-  public UnitInfo(final GroupLayer Hudlayer, float x, float y, int hp, int energy, int mind)
+  public UnitInfo(final GroupLayer Hudlayer, float x, float y, int hp, int energy, int mind, int morale, int hunger, int thirst, int fireres, int electres, int bleedres, int stunres)
   {
     String imgPath = "images/Hud.png"; // путь до картинки
     String imgPathFace = "Face";
@@ -138,6 +166,13 @@ public class HelloGame extends SceneGame {
     Hudlayer.addAt(layerHP, x+220, y+15);
     Hudlayer.addAt(layerEnergy, x+220, y+15+24);
     Hudlayer.addAt(layerMind, x+220, y+15+15+24+10);
+    Hudlayer.addAt(layerMorale, x+220, y+15+15+24+10+24);
+    Hudlayer.addAt(layerHunger, x+220, y+15+15+24+10+48);
+    Hudlayer.addAt(layerThirst, x+220, y+15+15+24+10+48+24);
+    Hudlayer.addAt(layerFireres, x+410, y+15);
+    Hudlayer.addAt(layerElectres, x+410, y+15+24);
+    Hudlayer.addAt(layerBleedres, x+410, y+15+24+24);
+    Hudlayer.addAt(layerStunres, x+410, y+15+24+24+24);
 
   }
 }
@@ -174,7 +209,7 @@ public class HelloGame extends SceneGame {
     // create a group layer to hold the peas
     final GroupLayer Hudlayer = new GroupLayer();
     rootLayer.add(Hudlayer);
-    new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind);
+    new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres);
 
 
     // when the pointer is tapped/clicked, add a new pea
@@ -187,7 +222,7 @@ public class HelloGame extends SceneGame {
           System.out.printf("hp: %d \n", hp);
 
           hp -= 5;
-          new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind); // рисуем сверху худ
+          new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres); // рисуем сверху худ
 
 
           for (int i = ii; i < masx; i++) {
