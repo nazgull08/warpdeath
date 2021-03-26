@@ -46,6 +46,9 @@ public class HelloGame extends SceneGame {
   int hudx = 0;
   int hudy = (1080-165);
   int hp = 45; // 1-15, 16-30, 31-45;
+  int energy = 10;
+  int mind = 100;
+  
 
 
   Graphics gfx = plat.graphics();
@@ -88,20 +91,28 @@ public class HelloGame extends SceneGame {
 
  public class UnitInfo
 {
-  String fontName = "Helvetica";
-  Font font = new Font(fontName, Font.Style.PLAIN, 24f);
-  TextFormat format = new TextFormat(font);
-  String hps = String.valueOf(hp);
-  TextLayout layout = gfx.layoutText(hps, format);
-  Layer layerText = createTextLayer(layout, 0xFFFF0000);
+  String fontName = "Impact";  // название шрифта
+  Font font = new Font(fontName, Font.Style.PLAIN, 24f); // создаем шрифт, из названия, стиля, размер текста, жирность
+  TextFormat format = new TextFormat(font);  // создаем формат из шрифта
+  String hps = "hp: " + String.valueOf(hp); // преобразуем число в строку
+  String energys = "energy: " + String.valueOf(energy);
+  String minds = "mind: " + String.valueOf(mind);
+  TextLayout layoutHp = gfx.layoutText(hps, format); // получаем надпись
+  TextLayout layoutEnergy = gfx.layoutText(energys, format); // получаем надпись
+  TextLayout layoutMind = gfx.layoutText(minds, format); // получаем надпись
+  Layer layerHP = createTextLayer(layoutHp, 0xFFFF0000); // запекаем надпись в картинку
+  Layer layerEnergy = createTextLayer(layoutEnergy, 0xFFAFEEEE); // запекаем надпись в картинку
+  Layer layerMind = createTextLayer(layoutMind, 0xFF000000); // запекаем надпись в картинку
 
-  protected Layer createTextLayer(TextLayout layout, int color) {
-    Canvas canvas = plat.graphics().createCanvas(layout.size);
-    canvas.setFillColor(color).fillText(layout, 0, 0);
-    return new ImageLayer(canvas.toTexture());
+
+
+  protected Layer createTextLayer(TextLayout layout, int color) { // функция запекания
+    Canvas canvas = plat.graphics().createCanvas(layout.size); // берем холст
+    canvas.setFillColor(color).fillText(layout, 0, 0); // рисуем на холсте текст
+    return new ImageLayer(canvas.toTexture()); // запекаем холст, возвращаем в виде слоя
   }
 
-  public UnitInfo(final GroupLayer Hudlayer, float x, float y, int hp)
+  public UnitInfo(final GroupLayer Hudlayer, float x, float y, int hp, int energy, int mind)
   {
     String imgPath = "images/Hud.png"; // путь до картинки
     String imgPathFace = "Face";
@@ -124,7 +135,10 @@ public class HelloGame extends SceneGame {
     layerface.setOrigin(ImageLayer.Origin.UL);
     Hudlayer.addAt(layer, x, y);
     Hudlayer.addAt(layerface, x+15, y+15);
-    Hudlayer.addAt(layerText, x+220, y+15);
+    Hudlayer.addAt(layerHP, x+220, y+15);
+    Hudlayer.addAt(layerEnergy, x+220, y+15+24);
+    Hudlayer.addAt(layerMind, x+220, y+15+15+24+10);
+
   }
 }
 
@@ -160,7 +174,7 @@ public class HelloGame extends SceneGame {
     // create a group layer to hold the peas
     final GroupLayer Hudlayer = new GroupLayer();
     rootLayer.add(Hudlayer);
-    new UnitInfo(Hudlayer, hudx, hudy, hp);
+    new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind);
 
 
     // when the pointer is tapped/clicked, add a new pea
@@ -173,7 +187,7 @@ public class HelloGame extends SceneGame {
           System.out.printf("hp: %d \n", hp);
 
           hp -= 5;
-          new UnitInfo(Hudlayer, hudx, hudy, hp);
+          new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind); // рисуем сверху худ
 
 
           for (int i = ii; i < masx; i++) {
