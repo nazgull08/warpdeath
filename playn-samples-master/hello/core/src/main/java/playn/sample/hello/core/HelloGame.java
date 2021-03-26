@@ -20,9 +20,16 @@ package playn.sample.hello.core;
 import react.Slot;
 
 import playn.core.Clock;
+import playn.core.Canvas;
 import playn.core.Image;
+import playn.core.Graphics;
+import playn.core.Font;
+import playn.core.TextBlock;
+import playn.core.TextFormat;
+import playn.core.TextLayout;
 import playn.core.Platform;
 import playn.core.Pointer;
+import playn.scene.Layer;
 import playn.scene.GroupLayer;
 import playn.scene.ImageLayer;
 import playn.scene.SceneGame;
@@ -39,6 +46,10 @@ public class HelloGame extends SceneGame {
   int hudx = 0;
   int hudy = (1080-165);
   int hp = 45; // 1-15, 16-30, 31-45;
+
+
+  Graphics gfx = plat.graphics();
+
 
   public class Floor {
 
@@ -77,32 +88,44 @@ public class HelloGame extends SceneGame {
 
  public class UnitInfo
 {
-     public UnitInfo(final GroupLayer Hudlayer, float x, float y, int hp)
-     {
-       String imgPath = "images/Hud.png"; // путь до картинки
-       String imgPathFace = "Face";
-       if (hp >30){
-         imgPathFace = "images/Face1.png";
-       } else {
-         if (hp >15)
-         {
-           imgPathFace = "images/Face2.png";
-         }
-         else {
-           imgPathFace = "images/Face3.png";
-         }
-       }
+  String fontName = "Helvetica";
+  Font font = new Font(fontName, Font.Style.PLAIN, 24f);
+  TextFormat format = new TextFormat(font);
+  String hps = String.valueOf(hp);
+  TextLayout layout = gfx.layoutText(hps, format);
+  Layer layerText = createTextLayer(layout, 0xFFFF0000);
 
+  protected Layer createTextLayer(TextLayout layout, int color) {
+    Canvas canvas = plat.graphics().createCanvas(layout.size);
+    canvas.setFillColor(color).fillText(layout, 0, 0);
+    return new ImageLayer(canvas.toTexture());
+  }
 
-       Image image = plat.assets().getImage(imgPath); // создаем объект картинка по этому пути
-       Image imageface = plat.assets().getImage(imgPathFace);
-       final ImageLayer layer = new ImageLayer(image); // создаем слой с картинкой на основе этой картинки
-       final ImageLayer layerface = new ImageLayer(imageface);
-       layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
-       layerface.setOrigin(ImageLayer.Origin.UL);
-       Hudlayer.addAt(layer, x, y);
-       Hudlayer.addAt(layerface, x+15, y+15);
-     }
+  public UnitInfo(final GroupLayer Hudlayer, float x, float y, int hp)
+  {
+    String imgPath = "images/Hud.png"; // путь до картинки
+    String imgPathFace = "Face";
+    if (hp >30){
+      imgPathFace = "images/Face1.png";
+    } else {
+      if (hp >15) {
+        imgPathFace = "images/Face2.png";
+      }
+      else {
+        imgPathFace = "images/Face3.png";
+      }
+    }
+
+    Image image = plat.assets().getImage(imgPath); // создаем объект картинка по этому пути
+    Image imageface = plat.assets().getImage(imgPathFace);
+    final ImageLayer layer = new ImageLayer(image); // создаем слой с картинкой на основе этой картинки
+    final ImageLayer layerface = new ImageLayer(imageface);
+    layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
+    layerface.setOrigin(ImageLayer.Origin.UL);
+    Hudlayer.addAt(layer, x, y);
+    Hudlayer.addAt(layerface, x+15, y+15);
+    Hudlayer.addAt(layerText, x+220, y+15);
+  }
 }
 
 
