@@ -36,8 +36,9 @@ public class HelloGame extends SceneGame {
   int jj = 0;
   int floorw = 32;
   int floorh = 32;
-
-
+  int hudx = 0;
+  int hudy = (1080-165);
+  int hp = 45; // 1-15, 16-30, 31-45;
 
   public class Floor {
 
@@ -74,8 +75,35 @@ public class HelloGame extends SceneGame {
 
 
 
- public class UnitInfo {
-   }
+ public class UnitInfo
+{
+     public UnitInfo(final GroupLayer Hudlayer, float x, float y, int hp)
+     {
+       String imgPath = "images/Hud.png"; // путь до картинки
+       String imgPathFace = "Face";
+       if (hp >30){
+         imgPathFace = "images/Face1.png";
+       } else {
+         if (hp >15)
+         {
+           imgPathFace = "images/Face2.png";
+         }
+         else {
+           imgPathFace = "images/Face3.png";
+         }
+       }
+
+
+       Image image = plat.assets().getImage(imgPath); // создаем объект картинка по этому пути
+       Image imageface = plat.assets().getImage(imgPathFace);
+       final ImageLayer layer = new ImageLayer(image); // создаем слой с картинкой на основе этой картинки
+       final ImageLayer layerface = new ImageLayer(imageface);
+       layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
+       layerface.setOrigin(ImageLayer.Origin.UL);
+       Hudlayer.addAt(layer, x, y);
+       Hudlayer.addAt(layerface, x+15, y+15);
+     }
+}
 
 
   public final Pointer pointer;
@@ -104,9 +132,13 @@ public class HelloGame extends SceneGame {
       }
     }
 
+
+
     // create a group layer to hold the peas
-    final GroupLayer peaLayer = new GroupLayer();
-    rootLayer.add(peaLayer);
+    final GroupLayer Hudlayer = new GroupLayer();
+    rootLayer.add(Hudlayer);
+    new UnitInfo(Hudlayer, hudx, hudy, hp);
+
 
     // when the pointer is tapped/clicked, add a new pea
     pointer.events.connect(new Slot<Pointer.Event>() {
@@ -115,7 +147,10 @@ public class HelloGame extends SceneGame {
           String x=String.valueOf(event.x());
           String y=String.valueOf(event.y());
           System.out.printf("x: %s \t y: %s   \n", x, y);
+          System.out.printf("hp: %d \n", hp);
 
+          hp -= 5;
+          new UnitInfo(Hudlayer, hudx, hudy, hp);
 
 
           for (int i = ii; i < masx; i++) {
