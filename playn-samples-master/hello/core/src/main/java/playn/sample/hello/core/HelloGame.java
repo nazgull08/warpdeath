@@ -77,6 +77,17 @@ public class HelloGame extends SceneGame {
     }
   }
 
+  public class Menu {
+
+    public Menu(final GroupLayer Menulayer, float x, float y) {
+      String imgMenu = "images/menu.png";;
+      Image imageM = plat.assets().getImage(imgMenu);
+      final ImageLayer layer = new ImageLayer(imageM);
+      layer.setOrigin(ImageLayer.Origin.UL);
+      Menulayer.addAt(layer, x+450, y-500);
+    }
+  }
+
 
   public class Unit {//разработка
 
@@ -210,6 +221,10 @@ public class HelloGame extends SceneGame {
     final GroupLayer Hudlayer = new GroupLayer();
     rootLayer.add(Hudlayer);
     new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres);
+
+    final GroupLayer Menulayer = new GroupLayer();
+    rootLayer.add(Menulayer);
+    new Menu(Menulayer,hudx, hudy);
 
 
     // when the pointer is tapped/clicked, add a new pea
