@@ -39,9 +39,12 @@ import playn.core.Key;
 
 
 
-
-
 public class HelloGame extends SceneGame {
+
+  Unit[] squad = new Unit[10]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
+  int squadLimit = 2; // Текущий предел отряда
+
+  int selectedUnit = -1;
 
   int masx = 10;
   int masy = 10;
@@ -51,6 +54,7 @@ public class HelloGame extends SceneGame {
   int floorh = 32;
   int hudx = 0;
   int hudy = (1080-165);
+
   int hp = 45; // 1-15, 16-30, 31-45;
   int energy = 10;
   int mind = 100;
@@ -61,26 +65,103 @@ public class HelloGame extends SceneGame {
   int electres = 100;
   int bleedres = 100;
   int stunres = 100;
-  boolean shiftDown, ctrlDown;
 
+  boolean showHUD = true;
 
+  boolean shiftDown, ctrlDown, tabDown;
 
   Graphics gfx = plat.graphics();
 
 
+  public final void redraw(){
+    rootLayer.disposeAll(); //Чистим все слои, принадлежащие корневому слою.
+
+    // ----------Background
+    // Создаем задник
+    Image bgImage = plat.assets().getImage("images/twin.png");
+    ImageLayer bgLayer = new ImageLayer(bgImage);
+    bgLayer.setSize(plat.graphics().viewSize);
+    rootLayer.add(bgLayer); //Добавляем задник корневому слою
+
+    // ----------Starship
+    final GroupLayer Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
+    rootLayer.add(Floorlayer);    //Добавляем слой корабля корневому слою
+    int numList[][]=new int[masx][masy];
+    for (int i = ii; i < masx; i++) {
+      for (int j = jj; j < masy; j++) {
+        numList[i][j]=0;
+          new Floor(Floorlayer, i*floorw, j*floorh);    //Заполняем групповой слой корабля тайлами пола
+      }
+    }
+
+    // ----------Squad
+    final GroupLayer Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
+    rootLayer.add(Squadlayer);    //Добавляем слой отряда корневому слою
+    for(int i=0; i<squadLimit; i++) { // Заполняем групповой слой отряда фигурками отряда
+      new SquadView(Squadlayer, squad[i]); //Рисуем члена отряда
+    }
+
+    // ----------HUD
+    if(showHUD) {
+      final GroupLayer Hudlayer = new GroupLayer();
+      rootLayer.add(Hudlayer);
+      if(selectedUnit==-1){
+        new UnitInfo(Hudlayer, hudx, hudy);
+      } else {
+        new UnitInfo(Hudlayer, hudx, hudy, squad[selectedUnit]);
+      }
+    };
+  };
+
+  public class Unit {//Класс юнита
+    public String name, age, role;
+    public int hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres;
+    public int actionPoints;
+    public int posx, posy;
+
+    public Unit(String nm, String ag, String rl, int h, int en, int x, int y) { //Конструктор юнита
+      name = nm;
+      age  = ag;
+      role = rl;
+      hp   = h;
+      energy = en;
+      mind = 100;
+      morale = 100;
+      hunger = 100;
+      thirst = 100;
+      fireres  = 100;
+      electres = 100;
+      bleedres = 100;
+      stunres  = 100;
+
+      actionPoints = 10;
+
+      posx = x;
+      posy = y;
+    }
+
+  }
+
   public class Floor {
 
-    public Floor(final GroupLayer Floorlayer, float x, float y, boolean status) {
-      String imgPath = "aaa";
-      if (status) {
-      imgPath = "images/floorSmall.png";
-    } else {
-      imgPath = "images/smallmarine.png";
-    };
+    public Floor(final GroupLayer Floorlayer, float x, float y) {
+      String imgPath = "images/floorSmall.png";
+      //imgPath = "images/smallmarine.png";
       Image image = plat.assets().getImage(imgPath);
       final ImageLayer layer = new ImageLayer(image);
       layer.setOrigin(ImageLayer.Origin.UL);
       Floorlayer.addAt(layer, x, y);
+    }
+  }
+
+  public class SquadView {
+
+    public SquadView(final GroupLayer Squadlayer, Unit unt) {
+      String imgPath = "images/smallmarine.png";
+      Image image = plat.assets().getImage(imgPath);
+      final ImageLayer layer = new ImageLayer(image);
+      layer.setOrigin(ImageLayer.Origin.UL);
+      Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
     }
   }
 
@@ -96,111 +177,118 @@ public class HelloGame extends SceneGame {
   }
 
 
-  public class Unit {//разработка
-    String name, age, class;
-    int hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres;
-  }
+  public class UnitInfo {
+    String fontName = "Impact";  // название шрифта
+    Font font = new Font(fontName, Font.Style.PLAIN, 24f); // создаем шрифт, из названия, стиля, размер текста, жирность
+    TextFormat format = new TextFormat(font);  // создаем формат из шрифта
 
-
-
- public class UnitInfo
-{
-  String fontName = "Impact";  // название шрифта
-  Font font = new Font(fontName, Font.Style.PLAIN, 24f); // создаем шрифт, из названия, стиля, размер текста, жирность
-  TextFormat format = new TextFormat(font);  // создаем формат из шрифта
-  String hps = "hp: " + String.valueOf(hp); // преобразуем число в строку
-  String energys = "energy: " + String.valueOf(energy);
-  String minds = "mind: " + String.valueOf(mind);
-  String morales = "morale: " + String.valueOf(morale);
-  String hungers = "hunger: " + String.valueOf(hunger);
-  String thirsts = "thirst: " + String.valueOf(thirst);
-  String fireress = "fireres: " + String.valueOf(fireres);
-  String electress = "electres: " + String.valueOf(electres);
-  String bleedress = "bleedres: " + String.valueOf(bleedres);
-  String stunress = "stunres: " + String.valueOf(stunres);
-  TextLayout layoutHp = gfx.layoutText(hps, format); // получаем надпись
-  TextLayout layoutEnergy = gfx.layoutText(energys, format); // получаем надпись
-  TextLayout layoutMind = gfx.layoutText(minds, format); // получаем надпись
-  TextLayout layoutMorale = gfx.layoutText(morales, format); // получаем надпись
-  TextLayout layoutHunger = gfx.layoutText(hungers, format); // получаем надпись
-  TextLayout layoutThirst = gfx.layoutText(thirsts, format); // получаем надпись
-  TextLayout layoutFireres = gfx.layoutText(fireress, format); // получаем надпись
-  TextLayout layoutElectres = gfx.layoutText(electress, format); // получаем надпись
-  TextLayout layoutBleedres = gfx.layoutText(bleedress, format); // получаем надпись
-  TextLayout layoutStunres = gfx.layoutText(stunress, format); // получаем надпись
-  Layer layerHP = createTextLayer(layoutHp, 0xFFFF0000); // запекаем надпись в картинку
-  Layer layerEnergy = createTextLayer(layoutEnergy, 0xFFAFEEEE); // запекаем надпись в картинку
-  Layer layerMind = createTextLayer(layoutMind, 0xFF000000); // запекаем надпись в картинку
-  Layer layerMorale = createTextLayer(layoutMorale, 0xFF0000FF); // запекаем надпись в картинку
-  Layer layerHunger = createTextLayer(layoutHunger, 0xFF008000); // запекаем надпись в картинку
-  Layer layerThirst = createTextLayer(layoutThirst, 0xFF00FFFF); // запекаем надпись в картинку
-  Layer layerFireres = createTextLayer(layoutFireres, 0xFFD2691E); // запекаем надпись в картинку
-  Layer layerElectres = createTextLayer(layoutElectres, 0xFFFFFF00); // запекаем надпись в картинку
-  Layer layerBleedres = createTextLayer(layoutBleedres, 0xFF8B0000); // запекаем надпись в картинку
-  Layer layerStunres = createTextLayer(layoutStunres, 0xFFFF8C00); // запекаем надпись в картинку
-
-
-
-  protected Layer createTextLayer(TextLayout layout, int color) { // функция запекания
-    Canvas canvas = plat.graphics().createCanvas(layout.size); // берем холст
-    canvas.setFillColor(color).fillText(layout, 0, 0); // рисуем на холсте текст
-    return new ImageLayer(canvas.toTexture()); // запекаем холст, возвращаем в виде слоя
-  }
-
-  public UnitInfo(final GroupLayer Hudlayer, float x, float y, int hp, int energy, int mind, int morale, int hunger, int thirst, int fireres, int electres, int bleedres, int stunres)
-  {
-    String imgPath = "images/Hud.png"; // путь до картинки
-    String imgPathFace = "Face";
-    if (hp >30){
-      imgPathFace = "images/Face1.png";
-    } else {
-      if (hp >15) {
-        imgPathFace = "images/Face2.png";
-      }
-      else {
-        imgPathFace = "images/Face3.png";
-      }
+    protected Layer createTextLayer(TextLayout layout, int color) { // функция запекания
+      Canvas canvas = plat.graphics().createCanvas(layout.size); // берем холст
+      canvas.setFillColor(color).fillText(layout, 0, 0); // рисуем на холсте текст
+      return new ImageLayer(canvas.toTexture()); // запекаем холст, возвращаем в виде слоя
     }
 
-    Image image = plat.assets().getImage(imgPath); // создаем объект картинка по этому пути
-    Image imageface = plat.assets().getImage(imgPathFace);
-    final ImageLayer layer = new ImageLayer(image); // создаем слой с картинкой на основе этой картинки
-    final ImageLayer layerface = new ImageLayer(imageface);
-    layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
-    layerface.setOrigin(ImageLayer.Origin.UL);
-    Hudlayer.addAt(layer, x, y);
-    Hudlayer.addAt(layerface, x+15, y+15);
-    Hudlayer.addAt(layerHP, x+220, y+15);
-    Hudlayer.addAt(layerEnergy, x+220, y+15+24);
-    Hudlayer.addAt(layerMind, x+220, y+15+15+24+10);
-    Hudlayer.addAt(layerMorale, x+220, y+15+15+24+10+24);
-    Hudlayer.addAt(layerHunger, x+220, y+15+15+24+10+48);
-    Hudlayer.addAt(layerThirst, x+220, y+15+15+24+10+48+24);
-    Hudlayer.addAt(layerFireres, x+410, y+15);
-    Hudlayer.addAt(layerElectres, x+410, y+15+24);
-    Hudlayer.addAt(layerBleedres, x+410, y+15+24+24);
-    Hudlayer.addAt(layerStunres, x+410, y+15+24+24+24);
+    public UnitInfo(final GroupLayer Hudlayer, float x, float y, Unit unt) // Коструктор 0, если выбран юнит
+    {
+      String imgPath = "images/Hud.png"; // путь до картинки
+      String hps = "hp: " + String.valueOf(unt.hp); // преобразуем число в строку
+      String energys = "energy: " + String.valueOf(unt.energy);
+      String minds = "mind: " + String.valueOf(unt.mind);
+      String morales = "morale: " + String.valueOf(unt.morale);
+      String hungers = "hunger: " + String.valueOf(unt.hunger);
+      String thirsts = "thirst: " + String.valueOf(unt.thirst);
+      String fireress = "fireres: " + String.valueOf(unt.fireres);
+      String electress = "electres: " + String.valueOf(unt.electres);
+      String bleedress = "bleedres: " + String.valueOf(unt.bleedres);
+      String stunress = "stunres: " + String.valueOf(unt.stunres);
+      String names = "name: " + unt.name;
+      TextLayout layoutHp = gfx.layoutText(hps, format); // получаем надпись
+      TextLayout layoutEnergy = gfx.layoutText(energys, format); // получаем надпись
+      TextLayout layoutMind = gfx.layoutText(minds, format); // получаем надпись
+      TextLayout layoutMorale = gfx.layoutText(morales, format); // получаем надпись
+      TextLayout layoutHunger = gfx.layoutText(hungers, format); // получаем надпись
+      TextLayout layoutThirst = gfx.layoutText(thirsts, format); // получаем надпись
+      TextLayout layoutFireres = gfx.layoutText(fireress, format); // получаем надпись
+      TextLayout layoutElectres = gfx.layoutText(electress, format); // получаем надпись
+      TextLayout layoutBleedres = gfx.layoutText(bleedress, format); // получаем надпись
+      TextLayout layoutStunres = gfx.layoutText(stunress, format); // получаем надпись
+      TextLayout layoutNames = gfx.layoutText(names, format); // получаем надпись
+      Layer layerHP = createTextLayer(layoutHp, 0xFFFF0000); // запекаем надпись в картинку
+      Layer layerEnergy = createTextLayer(layoutEnergy, 0xFFAFEEEE); // запекаем надпись в картинку
+      Layer layerMind = createTextLayer(layoutMind, 0xFF000000); // запекаем надпись в картинку
+      Layer layerMorale = createTextLayer(layoutMorale, 0xFF0000FF); // запекаем надпись в картинку
+      Layer layerHunger = createTextLayer(layoutHunger, 0xFF008000); // запекаем надпись в картинку
+      Layer layerThirst = createTextLayer(layoutThirst, 0xFF00FFFF); // запекаем надпись в картинку
+      Layer layerFireres = createTextLayer(layoutFireres, 0xFFD2691E); // запекаем надпись в картинку
+      Layer layerElectres = createTextLayer(layoutElectres, 0xFFFFFF00); // запекаем надпись в картинку
+      Layer layerBleedres = createTextLayer(layoutBleedres, 0xFF8B0000); // запекаем надпись в картинку
+      Layer layerStunres = createTextLayer(layoutStunres, 0xFFFF8C00); // запекаем надпись в картинку
+      Layer layerNames = createTextLayer(layoutNames, 0xFFFF8C00); // запекаем надпись в картинку
 
+      String imgPathFace = "Face";
+      if (unt.hp >30){
+        imgPathFace = "images/Face1.png";
+      } else {
+        if (unt.hp >15) {
+          imgPathFace = "images/Face2.png";
+        }
+        else {
+          imgPathFace = "images/Face3.png";
+        }
+      }
+
+      Image image = plat.assets().getImage(imgPath); // создаем объект картинка по этому пути
+      Image imageface = plat.assets().getImage(imgPathFace);
+      final ImageLayer layer = new ImageLayer(image); // создаем слой с картинкой на основе этой картинки
+      final ImageLayer layerface = new ImageLayer(imageface);
+      layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
+      layerface.setOrigin(ImageLayer.Origin.UL);
+      Hudlayer.addAt(layer, x, y);
+      Hudlayer.addAt(layerface, x+15, y+15);
+      Hudlayer.addAt(layerHP, x+220, y+15);
+      Hudlayer.addAt(layerEnergy, x+220, y+15+24);
+      Hudlayer.addAt(layerMind, x+220, y+15+15+24+10);
+      Hudlayer.addAt(layerMorale, x+220, y+15+15+24+10+24);
+      Hudlayer.addAt(layerHunger, x+220, y+15+15+24+10+48);
+      Hudlayer.addAt(layerThirst, x+220, y+15+15+24+10+48+24);
+      Hudlayer.addAt(layerFireres, x+410, y+15);
+      Hudlayer.addAt(layerElectres, x+410, y+15+24);
+      Hudlayer.addAt(layerBleedres, x+410, y+15+24+24);
+      Hudlayer.addAt(layerStunres, x+410, y+15+24+24+24);
+      Hudlayer.addAt(layerNames, x+410, y+15+24+24+24+24);
+
+    }
+
+    public UnitInfo(final GroupLayer Hudlayer, float x, float y) // Коструктор 1, если никто не выбран
+    {
+      String imgPath = "images/Hud.png"; // путь до картинки
+      Image image = plat.assets().getImage(imgPath); // создаем объект картинка по этому пути
+      final ImageLayer layer = new ImageLayer(image); // создаем слой с картинкой на основе этой картинки
+      layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
+      Hudlayer.addAt(layer, x, y);
+
+    }
   }
-}
 
 
   public final Pointer pointer;
 
   public HelloGame(Platform plat) {
     super(plat, 25); // 25 millis per frame = ~40fps
-    // ...
+
+    Unit tychus = new Unit("Тайкус","40","Танк",200,100, 3, 5); //Создаем Тайкуса в c координатами 3 5
+    Unit raynor = new Unit("Рейнор","40","ДД",150,150, 0, 2); //Создаем Рейнора с координатами 0 2
+
+    squad[0] = tychus; // Добавляем Тайкуса в отряд
+    squad[1] = raynor; // Добавляем Рейнора в отряд
+
+    // Обработчик клавиатуры
     plat.input().keyboardEvents.connect(new Keyboard.KeySlot() {
       public void onEmit (Keyboard.KeyEvent ev) {
         switch (ev.key) {
           case SHIFT: {
            shiftDown = ev.down;
-           if (!shiftDown)
-            {hp+=15;};
-            System.out.printf("hp: %d \n", hp);
-            final GroupLayer Hudlayer = new GroupLayer();
-            rootLayer.add(Hudlayer);
-            new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres);
+           redraw();
            break;
           }
           case CONTROL:{
@@ -210,11 +298,17 @@ public class HelloGame extends SceneGame {
               rootLayer.add(Menulayer);
               new Menu(Menulayer,hudx, hudy);
             }
-            else{
-              disposeAll();
-            };
-          };
-          break;
+            redraw();
+            break;
+          }
+          case TAB:{
+            tabDown = ev.down;
+            if (!tabDown){
+              showHUD = !showHUD;
+            }
+            redraw();
+            break;
+          }
           default: break;
         }
       }
@@ -224,36 +318,7 @@ public class HelloGame extends SceneGame {
     // combine mouse and touch into pointer events
     pointer = new Pointer(plat);
 
-    // create and add background image layer
-    Image bgImage = plat.assets().getImage("images/twin.png");
-    ImageLayer bgLayer = new ImageLayer(bgImage);
-    bgLayer.setSize(plat.graphics().viewSize);
-    rootLayer.add(bgLayer);
-
-    // create a group layer to hold the peas
-    final GroupLayer Floorlayer = new GroupLayer();
-    rootLayer.add(Floorlayer);
-
-    int numList[][]=new int[masx][masy];
-    for (int i = ii; i < masx; i++) {
-      for (int j = jj; j < masy; j++) {
-        numList[i][j]=0;
-          new Floor(Floorlayer, i*floorw, j*floorh, true);
-      }
-    }
-
-
-
-    // create a group layer to hold the peas
-    final GroupLayer Hudlayer = new GroupLayer();
-    rootLayer.add(Hudlayer);
-    new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres);
-
-
-
-
-
-    // when the pointer is tapped/clicked, add a new pea
+    // Обработчик мыши
     pointer.events.connect(new Slot<Pointer.Event>() {
 
 
@@ -263,22 +328,15 @@ public class HelloGame extends SceneGame {
         if (event.kind.isStart) {
           String x=String.valueOf(event.x());
           String y=String.valueOf(event.y());
-          System.out.printf("x: %s \t y: %s   \n", x, y);
-          System.out.printf("hp: %d \n", hp);
 
-          hp -= 5;
-          new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres); // рисуем сверху худ
-
-
-          for (int i = ii; i < masx; i++) {
-            for (int j = jj; j < masy; j++) {
-              if ( (event.x() >= i*floorw) && (event.x() <= (i+1)*floorw) && (event.y() >= j*floorh) && (event.y() <= (j+1)*floorh))
-              {  new Floor(Floorlayer, i*floorw, j*floorh, false);}
+          selectedUnit = -1;
+          for(int i=0; i<squadLimit;i++){
+            if ((event.x() >= squad[i].posx*floorw) && (event.x() <= (squad[i].posx+1)*floorw) && (event.y() >= squad[i].posy*floorh) && (event.y() <= (squad[i].posy+1)*floorh)){
+              selectedUnit=i;
             }
           }
-//          new Pea(peaLayer, event.x(), event.y());
-          //String s=String.valueOf(event.x());
-          //System.out.printf("%s ", s);
+
+          redraw();
         };
       }
     });
