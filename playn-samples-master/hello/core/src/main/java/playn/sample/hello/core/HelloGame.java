@@ -97,19 +97,8 @@ public class HelloGame extends SceneGame {
 
 
   public class Unit {//разработка
-
-    public Unit(final GroupLayer Floorlayer, float x, float y, boolean status) {
-      String imgPath = "aaa";
-      if (status) {
-      imgPath = "images/floorSmall.png";
-    } else {
-      imgPath = "images/smallmarine.png";
-    };
-      Image image = plat.assets().getImage(imgPath);
-      final ImageLayer layer = new ImageLayer(image);
-      layer.setOrigin(ImageLayer.Origin.UL);
-      Floorlayer.addAt(layer, x, y);
-    }
+    String name, age, class;
+    int hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres;
   }
 
 
@@ -222,7 +211,7 @@ public class HelloGame extends SceneGame {
               new Menu(Menulayer,hudx, hudy);
             }
             else{
-              //public void remove(Layer Menulayer)
+              disposeAll();
             };
           };
           break;
