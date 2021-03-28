@@ -34,6 +34,12 @@ import playn.scene.GroupLayer;
 import playn.scene.ImageLayer;
 import playn.scene.SceneGame;
 import playn.scene.SceneGame;
+import playn.core.Keyboard;
+import playn.core.Key;
+
+
+
+
 
 public class HelloGame extends SceneGame {
 
@@ -55,6 +61,7 @@ public class HelloGame extends SceneGame {
   int electres = 100;
   int bleedres = 100;
   int stunres = 100;
+  boolean shiftDown, ctrlDown;
 
 
 
@@ -193,6 +200,37 @@ public class HelloGame extends SceneGame {
 
   public HelloGame(Platform plat) {
     super(plat, 25); // 25 millis per frame = ~40fps
+    // ...
+    plat.input().keyboardEvents.connect(new Keyboard.KeySlot() {
+      public void onEmit (Keyboard.KeyEvent ev) {
+        switch (ev.key) {
+          case SHIFT: {
+           shiftDown = ev.down;
+           if (!shiftDown)
+            {hp+=15;};
+            System.out.printf("hp: %d \n", hp);
+            final GroupLayer Hudlayer = new GroupLayer();
+            rootLayer.add(Hudlayer);
+            new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres);
+           break;
+          }
+          case CONTROL:{
+            ctrlDown = ev.down;
+            if (ctrlDown){
+              final GroupLayer Menulayer = new GroupLayer();
+              rootLayer.add(Menulayer);
+              new Menu(Menulayer,hudx, hudy);
+            }
+            else{
+              //public void remove(Layer Menulayer)
+            };
+          };
+          break;
+          default: break;
+        }
+      }
+    });
+    // ...
 
     // combine mouse and touch into pointer events
     pointer = new Pointer(plat);
@@ -222,14 +260,17 @@ public class HelloGame extends SceneGame {
     rootLayer.add(Hudlayer);
     new UnitInfo(Hudlayer, hudx, hudy, hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres);
 
-    final GroupLayer Menulayer = new GroupLayer();
-    rootLayer.add(Menulayer);
-    new Menu(Menulayer,hudx, hudy);
+
+
 
 
     // when the pointer is tapped/clicked, add a new pea
     pointer.events.connect(new Slot<Pointer.Event>() {
+
+
       @Override public void onEmit (Pointer.Event event) {
+
+
         if (event.kind.isStart) {
           String x=String.valueOf(event.x());
           String y=String.valueOf(event.y());
