@@ -44,7 +44,9 @@ public class HelloGame extends SceneGame {
   Unit[] squad = new Unit[10]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
   int squadLimit = 2; // Текущий предел отряда
 
-  int selectedUnit = -1;
+  int selectedUnit = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
+  int selectedUnitx = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
+  int selectedUnity = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
 
   int masx = 10;
   int masy = 10;
@@ -55,16 +57,7 @@ public class HelloGame extends SceneGame {
   int hudx = 0;
   int hudy = (1080-165);
 
-  int hp = 45; // 1-15, 16-30, 31-45;
-  int energy = 10;
-  int mind = 100;
-  int morale = 600;
-  int hunger = 100;
-  int thirst = 100;
-  int fireres = 100;
-  int electres = 100;
-  int bleedres = 100;
-  int stunres = 100;
+
 
   boolean showHUD = true;
 
@@ -72,10 +65,13 @@ public class HelloGame extends SceneGame {
 
   Graphics gfx = plat.graphics();
 
+  GroupLayer Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
+  GroupLayer Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
 
   public final void redraw(){
     rootLayer.disposeAll(); //Чистим все слои, принадлежащие корневому слою.
-
+    Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
+    Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
     // ----------Background
     // Создаем задник
     Image bgImage = plat.assets().getImage("images/twin.png");
@@ -84,18 +80,26 @@ public class HelloGame extends SceneGame {
     rootLayer.add(bgLayer); //Добавляем задник корневому слою
 
     // ----------Starship
-    final GroupLayer Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
     rootLayer.add(Floorlayer);    //Добавляем слой корабля корневому слою
     int numList[][]=new int[masx][masy];
     for (int i = ii; i < masx; i++) {
       for (int j = jj; j < masy; j++) {
         numList[i][j]=0;
-          new Floor(Floorlayer, i*floorw, j*floorh);    //Заполняем групповой слой корабля тайлами пола
+        if(selectedUnit == -1){
+          new Floor(Floorlayer, i*floorw, j*floorh,false);    //Заполняем групповой слой корабля тайлами пола
+        }
+        else {
+          if((i == selectedUnitx) && (j == selectedUnity)){
+            new Floor(Floorlayer, i*floorw, j*floorh, true);    //Заполняем групповой слой корабля тайлами пола
+          }
+          else {
+            new Floor(Floorlayer, i*floorw, j*floorh, false);    //Заполняем групповой слой корабля тайлами пола
+          }
+        }
       }
     }
 
     // ----------Squad
-    final GroupLayer Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
     rootLayer.add(Squadlayer);    //Добавляем слой отряда корневому слою
     for(int i=0; i<squadLimit; i++) { // Заполняем групповой слой отряда фигурками отряда
       new SquadView(Squadlayer, squad[i]); //Рисуем члена отряда
@@ -144,9 +148,11 @@ public class HelloGame extends SceneGame {
 
   public class Floor {
 
-    public Floor(final GroupLayer Floorlayer, float x, float y) {
+    public Floor(final GroupLayer Floorlayer, float x, float y, boolean status) {
       String imgPath = "images/floorSmall.png";
-      //imgPath = "images/smallmarine.png";
+      if (status){
+        imgPath = "images/floorSmallActive.png";
+      }
       Image image = plat.assets().getImage(imgPath);
       final ImageLayer layer = new ImageLayer(image);
       layer.setOrigin(ImageLayer.Origin.UL);
@@ -274,7 +280,7 @@ public class HelloGame extends SceneGame {
   public final Pointer pointer;
 
   public HelloGame(Platform plat) {
-    super(plat, 25); // 25 millis per frame = ~40fps
+    super(plat, -50); // 25 millis per frame = ~40fps
 
     Unit tychus = new Unit("Тайкус","40","Танк",200,100, 3, 5); //Создаем Тайкуса в c координатами 3 5
     Unit raynor = new Unit("Рейнор","40","ДД",150,150, 0, 2); //Создаем Рейнора с координатами 0 2
@@ -329,10 +335,13 @@ public class HelloGame extends SceneGame {
           String x=String.valueOf(event.x());
           String y=String.valueOf(event.y());
 
+
           selectedUnit = -1;
           for(int i=0; i<squadLimit;i++){
             if ((event.x() >= squad[i].posx*floorw) && (event.x() <= (squad[i].posx+1)*floorw) && (event.y() >= squad[i].posy*floorh) && (event.y() <= (squad[i].posy+1)*floorh)){
               selectedUnit=i;
+              selectedUnity=squad[i].posy;
+              selectedUnitx=squad[i].posx;
             }
           }
 
