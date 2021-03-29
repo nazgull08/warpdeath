@@ -380,7 +380,8 @@ public class HelloGame extends SceneGame {
              if((selectedUnit > -1) && (squad[selectedUnit].posy > jj))
              {
                squad[selectedUnit].posy = squad[selectedUnit].posy -1;
-               //new Floor(Floorlayer, squad[selectedUnit].posx, squad[selectedUnit].posy, true);
+               selectedUnity--;
+      //         new Floor(Floorlayer, squad[selectedUnit].posx*floorw, squad[selectedUnit].posy*floorh, true);
              };
            };
            break;
@@ -392,6 +393,7 @@ public class HelloGame extends SceneGame {
              if((selectedUnit > -1) && (squad[selectedUnit].posy < masy-1))
              {
                squad[selectedUnit].posy = squad[selectedUnit].posy +1;
+               selectedUnity++;
              };
            };
            break;
@@ -403,6 +405,7 @@ public class HelloGame extends SceneGame {
              if((selectedUnit > -1) && (squad[selectedUnit].posx > ii))
              {
                squad[selectedUnit].posx = squad[selectedUnit].posx -1;
+               selectedUnitx--;
              };
            };
            break;
@@ -414,6 +417,7 @@ public class HelloGame extends SceneGame {
              if((selectedUnit > -1) && (squad[selectedUnit].posx < masx-1))
              {
                squad[selectedUnit].posx = squad[selectedUnit].posx +1;
+               selectedUnitx++;
              };
            };
            break;
