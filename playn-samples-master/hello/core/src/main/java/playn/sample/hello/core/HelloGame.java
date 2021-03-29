@@ -71,7 +71,7 @@ public class HelloGame extends SceneGame {
 
   boolean showHUD = true;
 
-  boolean shiftDown, ctrlDown, tabDown;
+  boolean shiftDown, ctrlDown, tabDown, wDown, sDown, aDown, dDown;
 
   Graphics gfx = plat.graphics();
 
@@ -374,6 +374,51 @@ public class HelloGame extends SceneGame {
 //           redraw();
            break;
           }
+          case W: {
+           wDown = ev.down;
+           if(wDown){
+             if((selectedUnit > -1) && (squad[selectedUnit].posy > jj))
+             {
+               squad[selectedUnit].posy = squad[selectedUnit].posy -1;
+               //new Floor(Floorlayer, squad[selectedUnit].posx, squad[selectedUnit].posy, true);
+             };
+           };
+           break;
+          }
+
+          case S: {
+           sDown = ev.down;
+           if(sDown){
+             if((selectedUnit > -1) && (squad[selectedUnit].posy < masy-1))
+             {
+               squad[selectedUnit].posy = squad[selectedUnit].posy +1;
+             };
+           };
+           break;
+          }
+
+          case A: {
+           aDown = ev.down;
+           if(aDown){
+             if((selectedUnit > -1) && (squad[selectedUnit].posx > ii))
+             {
+               squad[selectedUnit].posx = squad[selectedUnit].posx -1;
+             };
+           };
+           break;
+          }
+
+          case D: {
+           dDown = ev.down;
+           if(dDown){
+             if((selectedUnit > -1) && (squad[selectedUnit].posx < masx-1))
+             {
+               squad[selectedUnit].posx = squad[selectedUnit].posx +1;
+             };
+           };
+           break;
+          }
+
           case CONTROL:{
             ctrlDown = ev.down;
             if (ctrlDown){
