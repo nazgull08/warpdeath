@@ -36,8 +36,8 @@ import playn.scene.SceneGame;
 import playn.scene.SceneGame;
 import playn.core.Keyboard;
 import playn.core.Key;
+import playn.core.Sound;
 
-import playn.core.Surface;
 import playn.core.Tile;
 import react.RFuture;
 import react.Slot;
@@ -73,7 +73,6 @@ public class HelloGame extends SceneGame {
 
   private boolean loaded;
 
-  private final Tile[] tiles = new Tile[5];
 
   Image bgImage = plat.assets().getImage("images/twin.png");
   Image flImage = plat.assets().getImage("images/floorSmall.png");
@@ -83,6 +82,10 @@ public class HelloGame extends SceneGame {
   Image face1Image = plat.assets().getImage("images/Face1.png");
   Image face2Image = plat.assets().getImage("images/Face2.png");
   Image face3Image = plat.assets().getImage("images/Face3.png");
+  Image imageM = plat.assets().getImage( "images/menu.png");
+  Sound[] marineSounds = new Sound[5];
+  Sound s1 = plat.assets().getSound("sounds/anytimenow");
+  marineSounds[0] = s1;
 
 
   GroupLayer Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
@@ -192,8 +195,6 @@ public class HelloGame extends SceneGame {
   public class Menu {
 
     public Menu(final GroupLayer Menulayer, float x, float y) {
-      String imgMenu = "images/menu.png";;
-      Image imageM = plat.assets().getImage(imgMenu);
       final ImageLayer layer = new ImageLayer(imageM);
       layer.setOrigin(ImageLayer.Origin.UL);
       Menulayer.addAt(layer, x+450, y-500);
@@ -367,6 +368,7 @@ public class HelloGame extends SceneGame {
               selectedUnit=i;
               selectedUnity=squad[i].posy;
               selectedUnitx=squad[i].posx;
+              marineSounds[0].play();
             }
           }
         };
