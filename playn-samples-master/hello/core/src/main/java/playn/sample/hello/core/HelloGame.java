@@ -37,7 +37,14 @@ import playn.scene.SceneGame;
 import playn.core.Keyboard;
 import playn.core.Key;
 
-
+import playn.core.Surface;
+import playn.core.Tile;
+import react.RFuture;
+import react.Slot;
+import java.util.ArrayList;
+import java.util.List;
+import react.UnitSlot;
+import static java.lang.Math.max;
 
 public class HelloGame extends SceneGame {
 
@@ -58,15 +65,29 @@ public class HelloGame extends SceneGame {
   int hudy = (1080-165);
 
 
-
   boolean showHUD = true;
 
   boolean shiftDown, ctrlDown, tabDown;
 
   Graphics gfx = plat.graphics();
 
+  private boolean loaded;
+
+  private final Tile[] tiles = new Tile[5];
+
+  Image bgImage = plat.assets().getImage("images/twin.png");
+  Image flImage = plat.assets().getImage("images/floorSmall.png");
+  Image flActiveImage = plat.assets().getImage("images/floorSmallActive.png");
+  Image marineImage = plat.assets().getImage("images/smallmarine.png");
+  Image hudImage = plat.assets().getImage("images/Hud.png");
+  Image face1Image = plat.assets().getImage("images/Face1.png");
+  Image face2Image = plat.assets().getImage("images/Face2.png");
+  Image face3Image = plat.assets().getImage("images/Face3.png");
+
+
   GroupLayer Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
   GroupLayer Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
+
 
   public final void redraw(){
     rootLayer.disposeAll(); //Чистим все слои, принадлежащие корневому слою.
@@ -74,12 +95,12 @@ public class HelloGame extends SceneGame {
     Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
     // ----------Background
     // Создаем задник
-    Image bgImage = plat.assets().getImage("images/twin.png");
     ImageLayer bgLayer = new ImageLayer(bgImage);
     bgLayer.setSize(plat.graphics().viewSize);
     rootLayer.add(bgLayer); //Добавляем задник корневому слою
 
     // ----------Starship
+
     rootLayer.add(Floorlayer);    //Добавляем слой корабля корневому слою
     int numList[][]=new int[masx][masy];
     for (int i = ii; i < masx; i++) {
@@ -149,11 +170,10 @@ public class HelloGame extends SceneGame {
   public class Floor {
 
     public Floor(final GroupLayer Floorlayer, float x, float y, boolean status) {
-      String imgPath = "images/floorSmall.png";
+      Image image = flImage;
       if (status){
-        imgPath = "images/floorSmallActive.png";
+        image = flActiveImage;
       }
-      Image image = plat.assets().getImage(imgPath);
       final ImageLayer layer = new ImageLayer(image);
       layer.setOrigin(ImageLayer.Origin.UL);
       Floorlayer.addAt(layer, x, y);
@@ -163,9 +183,7 @@ public class HelloGame extends SceneGame {
   public class SquadView {
 
     public SquadView(final GroupLayer Squadlayer, Unit unt) {
-      String imgPath = "images/smallmarine.png";
-      Image image = plat.assets().getImage(imgPath);
-      final ImageLayer layer = new ImageLayer(image);
+      final ImageLayer layer = new ImageLayer(marineImage);
       layer.setOrigin(ImageLayer.Origin.UL);
       Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
     }
@@ -196,7 +214,6 @@ public class HelloGame extends SceneGame {
 
     public UnitInfo(final GroupLayer Hudlayer, float x, float y, Unit unt) // Коструктор 0, если выбран юнит
     {
-      String imgPath = "images/Hud.png"; // путь до картинки
       String hps = "hp: " + String.valueOf(unt.hp); // преобразуем число в строку
       String energys = "energy: " + String.valueOf(unt.energy);
       String minds = "mind: " + String.valueOf(unt.mind);
@@ -231,21 +248,19 @@ public class HelloGame extends SceneGame {
       Layer layerStunres = createTextLayer(layoutStunres, 0xFFFF8C00); // запекаем надпись в картинку
       Layer layerNames = createTextLayer(layoutNames, 0xFFFF8C00); // запекаем надпись в картинку
 
-      String imgPathFace = "Face";
+      Image imageface = face1Image;
       if (unt.hp >30){
-        imgPathFace = "images/Face1.png";
+        imageface = face1Image;
       } else {
         if (unt.hp >15) {
-          imgPathFace = "images/Face2.png";
+          imageface = face2Image;
         }
         else {
-          imgPathFace = "images/Face3.png";
+          imageface = face3Image;
         }
       }
 
-      Image image = plat.assets().getImage(imgPath); // создаем объект картинка по этому пути
-      Image imageface = plat.assets().getImage(imgPathFace);
-      final ImageLayer layer = new ImageLayer(image); // создаем слой с картинкой на основе этой картинки
+      final ImageLayer layer = new ImageLayer(hudImage); // создаем слой с картинкой на основе этой картинки
       final ImageLayer layerface = new ImageLayer(imageface);
       layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
       layerface.setOrigin(ImageLayer.Origin.UL);
@@ -267,9 +282,7 @@ public class HelloGame extends SceneGame {
 
     public UnitInfo(final GroupLayer Hudlayer, float x, float y) // Коструктор 1, если никто не выбран
     {
-      String imgPath = "images/Hud.png"; // путь до картинки
-      Image image = plat.assets().getImage(imgPath); // создаем объект картинка по этому пути
-      final ImageLayer layer = new ImageLayer(image); // создаем слой с картинкой на основе этой картинки
+      final ImageLayer layer = new ImageLayer(hudImage); // создаем слой с картинкой на основе этой картинки
       layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
       Hudlayer.addAt(layer, x, y);
 
@@ -279,8 +292,12 @@ public class HelloGame extends SceneGame {
 
   public final Pointer pointer;
 
+  @Override public void update(Clock clock) {
+    super.update(clock);
+  };
+
   public HelloGame(Platform plat) {
-    super(plat, -50); // 25 millis per frame = ~40fps
+    super(plat, 25); // 25 millis per frame = ~40fps
 
     Unit tychus = new Unit("Тайкус","40","Танк",200,100, 3, 5); //Создаем Тайкуса в c координатами 3 5
     Unit raynor = new Unit("Рейнор","40","ДД",150,150, 0, 2); //Создаем Рейнора с координатами 0 2
@@ -288,13 +305,19 @@ public class HelloGame extends SceneGame {
     squad[0] = tychus; // Добавляем Тайкуса в отряд
     squad[1] = raynor; // Добавляем Рейнора в отряд
 
+    update.connect(new Slot<Clock>() {
+      public void onEmit (Clock clock) {
+        redraw();
+      }
+    });
+
     // Обработчик клавиатуры
     plat.input().keyboardEvents.connect(new Keyboard.KeySlot() {
       public void onEmit (Keyboard.KeyEvent ev) {
         switch (ev.key) {
           case SHIFT: {
            shiftDown = ev.down;
-           redraw();
+//           redraw();
            break;
           }
           case CONTROL:{
@@ -304,7 +327,7 @@ public class HelloGame extends SceneGame {
               rootLayer.add(Menulayer);
               new Menu(Menulayer,hudx, hudy);
             }
-            redraw();
+  //          redraw();
             break;
           }
           case TAB:{
@@ -312,7 +335,7 @@ public class HelloGame extends SceneGame {
             if (!tabDown){
               showHUD = !showHUD;
             }
-            redraw();
+//            redraw();
             break;
           }
           default: break;
@@ -344,8 +367,6 @@ public class HelloGame extends SceneGame {
               selectedUnitx=squad[i].posx;
             }
           }
-
-          redraw();
         };
       }
     });
