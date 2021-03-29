@@ -67,7 +67,7 @@ public class HelloGame extends SceneGame {
   int soundCounter3 = 0;
   int soundCoolDown2 = 0;
   int soundCoolDown3 = 0;
-
+  int timerost = 0;
 
   boolean showHUD = true;
 
@@ -88,6 +88,8 @@ public class HelloGame extends SceneGame {
   Image face2Image = plat.assets().getImage("images/Face2.png");
   Image face3Image = plat.assets().getImage("images/Face3.png");
   Image imageM = plat.assets().getImage( "images/menu.png");
+
+  Sound mainOST = plat.assets().getMusic("sounds/1");
 
   Sound[] marineSounds = new Sound[] {                      // создание и присваивание значений массиву звуков
     plat.assets().getSound("sounds/marineSounds/anytimenow")
@@ -145,12 +147,7 @@ public class HelloGame extends SceneGame {
     // ----------Squad
     rootLayer.add(Squadlayer);    //Добавляем слой отряда корневому слою
     for(int i=0; i<squadLimit; i++) { // Заполняем групповой слой отряда фигурками отряда
-      if (i == 3){
         new SquadView(Squadlayer, squad[i], i); //Рисуем члена отряда
-      }
-      else{
-        new SquadView(Squadlayer, squad[i], i); //Рисуем члена отряда
-      }
     }
 
     // ----------HUD
@@ -364,6 +361,9 @@ public class HelloGame extends SceneGame {
         redraw();
       }
     });
+      mainOST.setLooping(true);
+      mainOST.play();
+
 
     // Обработчик клавиатуры
     plat.input().keyboardEvents.connect(new Keyboard.KeySlot() {
