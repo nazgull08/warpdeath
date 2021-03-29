@@ -49,7 +49,7 @@ import static java.lang.Math.max;
 public class HelloGame extends SceneGame {
 
   Unit[] squad = new Unit[10]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
-  int squadLimit = 2; // Текущий предел отряда
+  int squadLimit = 3; // Текущий предел отряда
 
   int selectedUnit = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
   int selectedUnitx = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
@@ -301,9 +301,11 @@ public class HelloGame extends SceneGame {
 
     Unit tychus = new Unit("Тайкус","40","Танк",200,100, 3, 5); //Создаем Тайкуса в c координатами 3 5
     Unit raynor = new Unit("Рейнор","40","ДД",150,150, 0, 2); //Создаем Рейнора с координатами 0 2
+    Unit ray = new Unit("Ray","40","Medic",75 ,75, 4, 4); //Создаем Рейнора с координатами 0 2
 
     squad[0] = tychus; // Добавляем Тайкуса в отряд
     squad[1] = raynor; // Добавляем Рейнора в отряд
+    squad[2] = ray; // Добавляем Рейнора в отряд
 
     update.connect(new Slot<Clock>() {
       public void onEmit (Clock clock) {
