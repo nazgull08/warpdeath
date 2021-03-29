@@ -49,7 +49,7 @@ import static java.lang.Math.max;
 public class HelloGame extends SceneGame {
 
   Unit[] squad = new Unit[10]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
-  int squadLimit = 3; // Текущий предел отряда
+  int squadLimit = 4; // Текущий предел отряда
 
   int selectedUnit = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
   int selectedUnitx = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
@@ -63,6 +63,10 @@ public class HelloGame extends SceneGame {
   int floorh = 32;
   int hudx = 0;
   int hudy = (1080-165);
+  int soundCounter2 = 0;
+  int soundCounter3 = 0;
+  int soundCoolDown2 = 0;
+  int soundCoolDown3 = 0;
 
 
   boolean showHUD = true;
@@ -78,15 +82,30 @@ public class HelloGame extends SceneGame {
   Image flImage = plat.assets().getImage("images/floorSmall.png");
   Image flActiveImage = plat.assets().getImage("images/floorSmallActive.png");
   Image marineImage = plat.assets().getImage("images/smallmarine.png");
+  Image commissionerImage = plat.assets().getImage("images/smallCommissioner.png");
   Image hudImage = plat.assets().getImage("images/Hud.png");
   Image face1Image = plat.assets().getImage("images/Face1.png");
   Image face2Image = plat.assets().getImage("images/Face2.png");
   Image face3Image = plat.assets().getImage("images/Face3.png");
   Image imageM = plat.assets().getImage( "images/menu.png");
-  Sound[] marineSounds = new Sound[5];
-  Sound s1 = plat.assets().getSound("sounds/anytimenow");
-  marineSounds[0] = s1;
 
+  Sound[] marineSounds = new Sound[] {                      // создание и присваивание значений массиву звуков
+    plat.assets().getSound("sounds/marineSounds/anytimenow")
+  , plat.assets().getSound("sounds/marineSounds/anytimenow")
+  , plat.assets().getSound("sounds/marineSounds/anytimenow")
+  , plat.assets().getSound("sounds/marineSounds/anytimenow")
+  , plat.assets().getSound("sounds/marineSounds/anytimenow")
+  };
+  Sound[] commissionerSounds = new Sound[] {                      // создание и присваивание значений массиву звуков
+    plat.assets().getSound("sounds/commissioner/1000300")
+  , plat.assets().getSound("sounds/commissioner/leave")
+  , plat.assets().getSound("sounds/commissioner/serve")
+  , plat.assets().getSound("sounds/commissioner/shoot")
+  , plat.assets().getSound("sounds/commissioner/stand")
+  };
+  Sound[] landSounds = new Sound[] {                      // создание и присваивание значений массиву звуков
+    plat.assets().getSound("sounds/landSounds/blip")
+  };
 
   GroupLayer Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
   GroupLayer Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
@@ -126,7 +145,12 @@ public class HelloGame extends SceneGame {
     // ----------Squad
     rootLayer.add(Squadlayer);    //Добавляем слой отряда корневому слою
     for(int i=0; i<squadLimit; i++) { // Заполняем групповой слой отряда фигурками отряда
-      new SquadView(Squadlayer, squad[i]); //Рисуем члена отряда
+      if (i == 3){
+        new SquadView(Squadlayer, squad[i], i); //Рисуем члена отряда
+      }
+      else{
+        new SquadView(Squadlayer, squad[i], i); //Рисуем члена отряда
+      }
     }
 
     // ----------HUD
@@ -185,10 +209,33 @@ public class HelloGame extends SceneGame {
 
   public class SquadView {
 
-    public SquadView(final GroupLayer Squadlayer, Unit unt) {
-      final ImageLayer layer = new ImageLayer(marineImage);
-      layer.setOrigin(ImageLayer.Origin.UL);
-      Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
+    public SquadView(final GroupLayer Squadlayer, Unit unt, int i) {
+      if(i==0)
+      {
+        final ImageLayer layer = new ImageLayer(marineImage);
+        layer.setOrigin(ImageLayer.Origin.UL);
+        Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
+      }
+      if(i==1)
+      {
+        final ImageLayer layer = new ImageLayer(marineImage);
+        layer.setOrigin(ImageLayer.Origin.UL);
+        Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
+      }
+      if(i==2)
+      {
+        final ImageLayer layer = new ImageLayer(marineImage);
+        layer.setOrigin(ImageLayer.Origin.UL);
+        Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
+      }
+      if(i==3)
+      {
+        final ImageLayer layer = new ImageLayer(commissionerImage);
+        layer.setOrigin(ImageLayer.Origin.UL);
+        Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
+      }
+
+      //final ImageLayer layer = new ImageLayer(marineImage);
     }
   }
 
@@ -303,13 +350,17 @@ public class HelloGame extends SceneGame {
     Unit tychus = new Unit("Тайкус","40","Танк",200,100, 3, 5); //Создаем Тайкуса в c координатами 3 5
     Unit raynor = new Unit("Рейнор","40","ДД",150,150, 0, 2); //Создаем Рейнора с координатами 0 2
     Unit ray = new Unit("Ray","40","Medic",75 ,75, 4, 4); //Создаем Рейнора с координатами 0 2
+    Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 7, 7); //Создаем Рейнора с координатами 0 2
 
     squad[0] = tychus; // Добавляем Тайкуса в отряд
     squad[1] = raynor; // Добавляем Рейнора в отряд
     squad[2] = ray; // Добавляем Рейнора в отряд
+    squad[3] = commissioner; // Добавляем Рейнора в отряд
 
     update.connect(new Slot<Clock>() {
       public void onEmit (Clock clock) {
+        if (soundCoolDown2 > 0){soundCoolDown2--;};       // уменьшение кд на воспроизведение реплики
+        if (soundCoolDown3 > 0){soundCoolDown3--;};       // уменьшение кд на воспроизведение реплики
         redraw();
       }
     });
@@ -361,15 +412,41 @@ public class HelloGame extends SceneGame {
           String x=String.valueOf(event.x());
           String y=String.valueOf(event.y());
 
-
           selectedUnit = -1;
           for(int i=0; i<squadLimit;i++){
             if ((event.x() >= squad[i].posx*floorw) && (event.x() <= (squad[i].posx+1)*floorw) && (event.y() >= squad[i].posy*floorh) && (event.y() <= (squad[i].posy+1)*floorh)){
               selectedUnit=i;
               selectedUnity=squad[i].posy;
               selectedUnitx=squad[i].posx;
-              marineSounds[0].play();
+
+
+              if (i == 3){
+                    if (soundCoolDown3 <= 0){
+                      commissionerSounds[soundCounter3].play();    //воспроизведение звуков
+                      soundCounter3++;     //счетчик реплик
+                      soundCoolDown3 = 100;   // установка кд реплики
+                    }
+                    if (soundCounter3 == 5){soundCounter3 = 0;};  // сброс реплик
+                  };
+
+
+
+              if (i == 2){
+                    if (soundCoolDown2 <= 0){
+                      marineSounds[soundCounter2].play();    //воспроизведение звуков
+                      soundCounter2++;     //счетчик реплик
+                      soundCoolDown2 = 100;   // установка кд реплики
+                    };
+                    if (soundCounter2 == 5){soundCounter2 = 0;};  // сброс реплик
+                  };
+
+
+
+
             }
+          };
+          if ((selectedUnit== -1) && (event.x() <=10*floorw) && (event.y() <=10*floorh)){
+            landSounds[0].play();
           }
         };
       }
