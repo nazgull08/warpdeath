@@ -59,17 +59,23 @@ public class HelloGame extends SceneGame {
   int masy = 10;
   int ii = 0;
   int jj = 0;
-  int floorw = 32;
-  int floorh = 32;
+  int floorw = 128;
+  int floorh = 128;
   int hudx = 0;
-  int hudy = (1080-165);
+  int hudy = (1080-255);
   int soundCounter2 = 0;
   int soundCounter3 = 0;
   int soundCoolDown2 = 0;
   int soundCoolDown3 = 0;
   int timerost = 0;
+  int faceCoolDown = 20;
+
+  int startdelay = 20;
 
   boolean showHUD = true;
+
+  boolean animation = true;
+  boolean speakAnimation = true;
 
   boolean shiftDown, ctrlDown, tabDown, wDown, sDown, aDown, dDown;
 
@@ -79,15 +85,21 @@ public class HelloGame extends SceneGame {
 
 
   Image bgImage = plat.assets().getImage("images/twin.png");
-  Image flImage = plat.assets().getImage("images/floorSmall.png");
-  Image flActiveImage = plat.assets().getImage("images/floorSmallActive.png");
-  Image marineImage = plat.assets().getImage("images/smallmarine.png");
-  Image commissionerImage = plat.assets().getImage("images/smallCommissioner.png");
+  Image flImage = plat.assets().getImage("images/floor/floor1.png");
+  Image flActiveImage = plat.assets().getImage("images/floor/floora.png");
+  Image marineImage = plat.assets().getImage("images/marine.png");
+  Image marinebImage = plat.assets().getImage("images/marineb.png");
+  Image commissionerImage = plat.assets().getImage("images/commissioner.png");
+  Image commissionerbImage = plat.assets().getImage("images/commissionerb.png");
   Image hudImage = plat.assets().getImage("images/Hud.png");
-  Image face1Image = plat.assets().getImage("images/Face1.png");
-  Image face2Image = plat.assets().getImage("images/Face2.png");
-  Image face3Image = plat.assets().getImage("images/Face3.png");
+  Image face1Image = plat.assets().getImage("images/face/Face11.png");
+  Image face1bImage = plat.assets().getImage("images/face/Face1b.png");
+  Image face11cImage = plat.assets().getImage("images/face/Face11c.png");
+  Image face2Image = plat.assets().getImage("images/face/Face2.png");
+  Image face3Image = plat.assets().getImage("images/face/Face3.png");
   Image imageM = plat.assets().getImage( "images/menu.png");
+  Image menuWide = plat.assets().getImage( "images/menuWide.png");
+
 
   Sound mainOST = plat.assets().getMusic("sounds/1");
 
@@ -207,27 +219,40 @@ public class HelloGame extends SceneGame {
   public class SquadView {
 
     public SquadView(final GroupLayer Squadlayer, Unit unt, int i) {
+      Image mImage = marineImage;
+      if(animation) {
+        mImage = marineImage;
+      } else {
+        mImage = marinebImage;
+      }
+      Image cImage = commissionerImage;
+      if(animation) {
+        cImage = commissionerImage;
+      } else {
+        cImage = commissionerbImage;
+      }
+
       if(i==0)
       {
-        final ImageLayer layer = new ImageLayer(marineImage);
+        final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
         Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
       }
       if(i==1)
       {
-        final ImageLayer layer = new ImageLayer(marineImage);
+        final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
         Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
       }
       if(i==2)
       {
-        final ImageLayer layer = new ImageLayer(marineImage);
+        final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
         Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
       }
       if(i==3)
       {
-        final ImageLayer layer = new ImageLayer(commissionerImage);
+        final ImageLayer layer = new ImageLayer(cImage);
         layer.setOrigin(ImageLayer.Origin.UL);
         Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
       }
@@ -295,7 +320,14 @@ public class HelloGame extends SceneGame {
 
       Image imageface = face1Image;
       if (unt.hp >30){
-        imageface = face1Image;
+        if (animation)
+          {imageface = face1Image;}
+        else
+          {imageface = face1bImage;}
+        //if (speakAnimation)
+      //    {imageface = face11bImage;}
+      //  else
+      //    {imageface = face11cImage;}
       } else {
         if (unt.hp >15) {
           imageface = face2Image;
@@ -305,29 +337,29 @@ public class HelloGame extends SceneGame {
         }
       }
 
-      final ImageLayer layer = new ImageLayer(hudImage); // создаем слой с картинкой на основе этой картинки
+      final ImageLayer layer = new ImageLayer(menuWide); // создаем слой с картинкой на основе этой картинки
       final ImageLayer layerface = new ImageLayer(imageface);
       layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
       layerface.setOrigin(ImageLayer.Origin.UL);
       Hudlayer.addAt(layer, x, y);
-      Hudlayer.addAt(layerface, x+15, y+15);
-      Hudlayer.addAt(layerHP, x+220, y+15);
-      Hudlayer.addAt(layerEnergy, x+220, y+15+24);
-      Hudlayer.addAt(layerMind, x+220, y+15+15+24+10);
-      Hudlayer.addAt(layerMorale, x+220, y+15+15+24+10+24);
-      Hudlayer.addAt(layerHunger, x+220, y+15+15+24+10+48);
-      Hudlayer.addAt(layerThirst, x+220, y+15+15+24+10+48+24);
-      Hudlayer.addAt(layerFireres, x+410, y+15);
-      Hudlayer.addAt(layerElectres, x+410, y+15+24);
-      Hudlayer.addAt(layerBleedres, x+410, y+15+24+24);
-      Hudlayer.addAt(layerStunres, x+410, y+15+24+24+24);
-      Hudlayer.addAt(layerNames, x+410, y+15+24+24+24+24);
+      Hudlayer.addAt(layerface, x+47+17, y+47+17);
+      Hudlayer.addAt(layerHP, x+220+100, y+30+15);
+      Hudlayer.addAt(layerEnergy, x+220+100, y+30+15+24);
+      Hudlayer.addAt(layerMind, x+220+100, y+30+15+15+24+10);
+      Hudlayer.addAt(layerMorale, x+220+100, y+30+15+15+24+10+24);
+      Hudlayer.addAt(layerHunger, x+220+100, y+30+15+15+24+10+48);
+      Hudlayer.addAt(layerThirst, x+220+100, y+30+15+15+24+10+48+24);
+      Hudlayer.addAt(layerFireres, x+410+100, y+30+15);
+      Hudlayer.addAt(layerElectres, x+410+100, y+30+15+24);
+      Hudlayer.addAt(layerBleedres, x+410+100, y+30+15+24+24);
+      Hudlayer.addAt(layerStunres, x+410+100, y+30+15+24+24+24);
+      Hudlayer.addAt(layerNames, x+410+100, y+30+15+24+24+24+24);
 
     }
 
     public UnitInfo(final GroupLayer Hudlayer, float x, float y) // Коструктор 1, если никто не выбран
     {
-      final ImageLayer layer = new ImageLayer(hudImage); // создаем слой с картинкой на основе этой картинки
+      final ImageLayer layer = new ImageLayer(menuWide); // создаем слой с картинкой на основе этой картинки
       layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
       Hudlayer.addAt(layer, x, y);
 
@@ -346,7 +378,7 @@ public class HelloGame extends SceneGame {
 
     Unit tychus = new Unit("Тайкус","40","Танк",200,100, 3, 5); //Создаем Тайкуса в c координатами 3 5
     Unit raynor = new Unit("Рейнор","40","ДД",150,150, 0, 2); //Создаем Рейнора с координатами 0 2
-    Unit ray = new Unit("Ray","40","Medic",75 ,75, 4, 4); //Создаем Рейнора с координатами 0 2
+    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 4, 4); //Создаем Рейнора с координатами 0 2
     Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 7, 7); //Создаем Рейнора с координатами 0 2
 
     squad[0] = tychus; // Добавляем Тайкуса в отряд
@@ -356,9 +388,22 @@ public class HelloGame extends SceneGame {
 
     update.connect(new Slot<Clock>() {
       public void onEmit (Clock clock) {
-        if (soundCoolDown2 > 0){soundCoolDown2--;};       // уменьшение кд на воспроизведение реплики
+
+        if(faceCoolDown >= 0){faceCoolDown--;};
+        if(faceCoolDown < 0){
+          animation = !animation;
+          faceCoolDown = 10;
+        }
+
+        if (soundCoolDown2 > 0){soundCoolDown2--;
+        speakAnimation=!speakAnimation;};       // уменьшение кд на воспроизведение реплики
         if (soundCoolDown3 > 0){soundCoolDown3--;};       // уменьшение кд на воспроизведение реплики
-        redraw();
+        if (startdelay<=0){
+          startdelay=0;
+          redraw();
+        } else{
+          startdelay--;
+        }
       }
     });
       mainOST.setLooping(true);
@@ -455,7 +500,6 @@ public class HelloGame extends SceneGame {
 
 
       @Override public void onEmit (Pointer.Event event) {
-
 
         if (event.kind.isStart) {
           String x=String.valueOf(event.x());
