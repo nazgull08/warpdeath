@@ -69,6 +69,9 @@ public class HelloGame extends SceneGame {
   int soundCoolDown3 = 0;
   int timerost = 0;
   int faceCoolDown = 20;
+  int selectedTime = 0;
+  int selectedTimeCD = 40;
+  int selectedTimeI = 1;
 
   int startdelay = 20;
 
@@ -85,18 +88,31 @@ public class HelloGame extends SceneGame {
 
 
   Image bgImage = plat.assets().getImage("images/twin.png");
-  Image flImage = plat.assets().getImage("images/floor/floor1.png");
+  Image flImage1 = plat.assets().getImage("images/floor/floor1.png");
+  Image flImage11 = plat.assets().getImage("images/floor/floor11.png");
+  Image flImage2 = plat.assets().getImage("images/floor/floor2.png");
+  Image flImage3 = plat.assets().getImage("images/floor/floor3.png");
+  Image flImage4 = plat.assets().getImage("images/floor/floor4.png");
+  Image flImage5 = plat.assets().getImage("images/floor/floor5.png");
+  Image flImage6 = plat.assets().getImage("images/floor/floor6.png");
+  Image flImage7 = plat.assets().getImage("images/floor/floor7.png");
+  Image flImage8 = plat.assets().getImage("images/floor/floor8.png");
+  Image flsImage = plat.assets().getImage("images/floor/floors.png");
   Image flActiveImage = plat.assets().getImage("images/floor/floora.png");
+
   Image marineImage = plat.assets().getImage("images/marine.png");
   Image marinebImage = plat.assets().getImage("images/marineb.png");
   Image commissionerImage = plat.assets().getImage("images/commissioner.png");
   Image commissionerbImage = plat.assets().getImage("images/commissionerb.png");
+
   Image hudImage = plat.assets().getImage("images/Hud.png");
+
   Image face1Image = plat.assets().getImage("images/face/Face11.png");
   Image face1bImage = plat.assets().getImage("images/face/Face1b.png");
   Image face11cImage = plat.assets().getImage("images/face/Face11c.png");
   Image face2Image = plat.assets().getImage("images/face/Face2.png");
   Image face3Image = plat.assets().getImage("images/face/Face3.png");
+
   Image imageM = plat.assets().getImage( "images/menu.png");
   Image menuWide = plat.assets().getImage( "images/menuWide.png");
 
@@ -143,7 +159,7 @@ public class HelloGame extends SceneGame {
       for (int j = jj; j < masy; j++) {
         numList[i][j]=0;
         if(selectedUnit == -1){
-          new Floor(Floorlayer, i*floorw, j*floorh,false);    //Заполняем групповой слой корабля тайлами пола
+          new Floor(Floorlayer, i*floorw, j*floorh, false);    //Заполняем групповой слой корабля тайлами пола
         }
         else {
           if((i == selectedUnitx) && (j == selectedUnity)){
@@ -227,9 +243,19 @@ public class HelloGame extends SceneGame {
   public class Floor {
 
     public Floor(final GroupLayer Floorlayer, float x, float y, boolean status) {
-      Image image = flImage;
+      Image image = flImage1;
       if (status){
-        image = flActiveImage;
+        //image = flActiveImage;
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 1)) {image = flImage11;};
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 2)) {image = flImage2;};
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 3)) {image = flImage3;};
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 4)) {image = flImage4;};
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 5)) {image = flImage5;};
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 6)) {image = flImage6;};
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 7)) {image = flImage7;};
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 8)) {image = flImage8;};
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 9)) {image = flsImage;};
+
       }
       final ImageLayer layer = new ImageLayer(image);
       layer.setOrigin(ImageLayer.Origin.UL);
@@ -410,6 +436,61 @@ public class HelloGame extends SceneGame {
     update.connect(new Slot<Clock>() {
       public void onEmit (Clock clock) {
 
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 1)) {
+          selectedTime++;
+          if (selectedTime == (selectedTimeCD*selectedTimeI)){selectedTimeI++;};
+        }
+
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 2)){
+          selectedTime++;
+          if (selectedTime == (selectedTimeCD*selectedTimeI)){selectedTimeI++;};
+        }
+
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 3)){
+          selectedTime++;
+          if (selectedTime == (selectedTimeCD*selectedTimeI)){selectedTimeI++;};
+        }
+
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 4)){
+          selectedTime++;
+          if (selectedTime == (selectedTimeCD*selectedTimeI)){selectedTimeI++;};
+        }
+
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 5)){
+          selectedTime++;
+          if (selectedTime == (selectedTimeCD*selectedTimeI)){selectedTimeI++;};
+        }
+
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 6)){
+          selectedTime++;
+          if (selectedTime == (selectedTimeCD*selectedTimeI)){selectedTimeI++;};
+        }
+
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 7)){
+          selectedTime++;
+          if (selectedTime == (selectedTimeCD*selectedTimeI)){selectedTimeI++;};
+        }
+
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 8)){
+          selectedTime++;
+          if (selectedTime == (selectedTimeCD*selectedTimeI)){selectedTimeI++;};
+        }
+
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 9)){
+          selectedTime++;
+          if (selectedTime == (selectedTimeCD*selectedTimeI)){
+            selectedTimeI++;
+          };
+        }
+        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 9)){
+          selectedTime++;
+          if (selectedTime == (selectedTimeCD*selectedTimeI)){
+            selectedTimeI=1;
+            selectedTime = 0;
+          };
+        }
+
+
         if(faceCoolDown >= 0){faceCoolDown--;};
         if(faceCoolDown < 0){
           animation = !animation;
@@ -502,7 +583,6 @@ public class HelloGame extends SceneGame {
           }
           case TAB:{
             tabDown = ev.down;
-            mainOST.stop();
             if (!tabDown){
               showHUD = !showHUD;
             }
