@@ -180,7 +180,28 @@ public class HelloGame extends SceneGame {
     public int actionPoints;
     public int posx, posy;
 
-    public Unit(String nm, String ag, String rl, int h, int en, int x, int y) { //Конструктор юнита
+    public Unit(String nm, String ag, String rl, int h, int en, int x, int y, int m, int hun) { //Конструктор юнита
+      name = nm;
+      age  = ag;
+      role = rl;
+      hp   = h;
+      energy = en;
+      mind = 100;
+      morale = m;
+      hunger = hun;
+      thirst = 100;
+      fireres  = 100;
+      electres = 100;
+      bleedres = 100;
+      stunres  = 100;
+
+      actionPoints = 10;
+
+      posx = x;
+      posy = y;
+    }
+
+    public Unit(String nm, String ag, String rl, int h, int en, int x, int y) { //Конструктор юнита, перегруз
       name = nm;
       age  = ag;
       role = rl;
@@ -376,9 +397,9 @@ public class HelloGame extends SceneGame {
   public HelloGame(Platform plat) {
     super(plat, 25); // 25 millis per frame = ~40fps
 
-    Unit tychus = new Unit("Тайкус","40","Танк",200,100, 3, 5); //Создаем Тайкуса в c координатами 3 5
-    Unit raynor = new Unit("Рейнор","40","ДД",150,150, 0, 2); //Создаем Рейнора с координатами 0 2
-    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 4, 4); //Создаем Рейнора с координатами 0 2
+    Unit tychus = new Unit("Тайкус","40","Танк",200,100, 3, 5, 142, 242); //Создаем Тайкуса в c координатами 3 5
+    Unit raynor = new Unit("Рейнор","40","ДД",150,150, 0, 2, 422, 144); //Создаем Рейнора с координатами 0 2
+    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 4, 4, 12, 42); //Создаем Рейнора с координатами 0 2
     Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 7, 7); //Создаем Рейнора с координатами 0 2
 
     squad[0] = tychus; // Добавляем Тайкуса в отряд
@@ -407,6 +428,7 @@ public class HelloGame extends SceneGame {
       }
     });
       mainOST.setLooping(true);
+      mainOST.setVolume(0.1f);
       mainOST.play();
 
 
@@ -480,6 +502,7 @@ public class HelloGame extends SceneGame {
           }
           case TAB:{
             tabDown = ev.down;
+            mainOST.stop();
             if (!tabDown){
               showHUD = !showHUD;
             }
@@ -515,6 +538,7 @@ public class HelloGame extends SceneGame {
 
               if (i == 3){
                     if (soundCoolDown3 <= 0){
+                      commissionerSounds[soundCounter3].setVolume(0.1f);
                       commissionerSounds[soundCounter3].play();    //воспроизведение звуков
                       soundCounter3++;     //счетчик реплик
                       soundCoolDown3 = 100;   // установка кд реплики
