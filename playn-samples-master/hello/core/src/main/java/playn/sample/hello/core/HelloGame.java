@@ -111,6 +111,7 @@ public class HelloGame extends SceneGame {
   Image wallR = plat.assets().getImage("images/floor/wallR.png");
   Image wallF = plat.assets().getImage("images/floor/wallF.png");
   Image empty = plat.assets().getImage("images/floor/emptiness.png");
+  Image passUp = plat.assets().getImage("images/floor/passup.png");
 
   Image selection1 = plat.assets().getImage("images/selection/sel1.png");
   Image selection2 = plat.assets().getImage("images/selection/sel2.png");
@@ -180,17 +181,18 @@ public class HelloGame extends SceneGame {
   ShipFloor sWallF = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWF");
   ShipFloor sWallU = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWFU");
   ShipFloor sWallR = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWFR");
+  ShipFloor sPassU = new ShipFloor("Дорога", "Стандартная стальная обшивка", 100, "sFUP");
   ShipFloor emptyF  = new ShipFloor("Межзвёздная пустота", "Обычный вакуум", 0, "emptyF");
 
   ShipFloor[][] startShipForm = new ShipFloor[][]{
-    { emptyF, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    { emptyF, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, emptyF, emptyF, emptyF, emptyF, sWallR},
     { sWallF, sWallF, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sWallF, emptyF, emptyF, sWallF, emptyF},
     { sWallF, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sWallF, sWallF, sWallF, sFloor, sWallF},
-    { sWallF, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sWallF},
-    { sWallF, sFloor, sWallF, sFloor, sWallF, sWallF, sWallF, emptyF, sFloor, sFloor, sFloor, sFloor, sWallF},
-    { sWallF, sWallF, sFloor, sFloor, sFloor, sFloor, sWallF, emptyF, sFloor, sFloor, sFloor, sWallF, sWallF},
-    { emptyF, sWallF, sFloor, sFloor, sFloor, sFloor, sWallF, sWallF, sFloor, sWallF, sFloor, sWallF, emptyF},
-    { emptyF, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, emptyF, sWallF, emptyF, sWallF, emptyF, emptyF}
+    { sWallF, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sPassU, sFloor, sFloor, sFloor, sWallF},
+    { sWallF, sFloor, sWallF, sFloor, sWallF, sWallF, sWallF, emptyF, sPassU, sFloor, sFloor, sFloor, sWallF},
+    { sWallF, sWallF, sFloor, sFloor, sFloor, sFloor, sWallF, emptyF, sPassU, sFloor, sFloor, sWallF, sWallF},
+    { emptyF, sWallF, sFloor, sFloor, sFloor, sFloor, sWallF, sWallF, sPassU, sWallF, sFloor, sWallF, emptyF},
+    { sWallR, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, emptyF, sWallF, emptyF, sWallF, emptyF, emptyF}
   };
 
   SpaceShip startShip = new SpaceShip("Победоносный", startShipForm);
@@ -293,11 +295,12 @@ public class HelloGame extends SceneGame {
             case "sWF":{image = wallF; break;}
             case "sWFU":{image = wallU; break;}
             case "sWFR":{image = wallR; break;}
+            case "sFUP":{image = passUp; break;}
             default: break;
           }
           final ImageLayer layer = new ImageLayer(image);
           layer.setOrigin(ImageLayer.Origin.UL);
-          Floorlayer.addAt(layer, shipPositionX+floorw*i, shipPositionY+floorh*j);
+          Floorlayer.addAt(layer, shipPositionX+floorw*j, shipPositionY+floorh*i);
         }
       }
     }
@@ -532,10 +535,10 @@ public class HelloGame extends SceneGame {
   public HelloGame(Platform plat) {
     super(plat, 25); // 25 millis per frame = ~40fps
 
-    Unit tychus = new Unit("Тайкус","40","Танк",200,100, 3, 5, 142, 242); //Создаем Тайкуса в c координатами 3 5
-    Unit raynor = new Unit("Рейнор","40","ДД",150,150, 0, 2, 422, 144); //Создаем Рейнора с координатами 0 2
-    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 4, 4, 12, 42); //Создаем Рейнора с координатами 0 2
-    Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 7, 7); //Создаем Рейнора с координатами 0 2
+    Unit tychus = new Unit("Тайкус","40","Танк",200,100, 5, 5, 142, 242); //Создаем Тайкуса в c координатами 3 5
+    Unit raynor = new Unit("Рейнор","40","ДД",150,150, 5, 2, 422, 144); //Создаем Рейнора с координатами 0 2
+    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 4, 3, 11, 42); //Создаем Рейнора с координатами 0 2
+    Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 8, 6); //Создаем Рейнора с координатами 0 2
 
     squad[0] = tychus; // Добавляем Тайкуса в отряд
     squad[1] = raynor; // Добавляем Рейнора в отряд
@@ -630,7 +633,7 @@ public class HelloGame extends SceneGame {
       }
     });
       mainOST.setLooping(true);
-      mainOST.setVolume(0.1f);
+      mainOST.setVolume(0.06f);
       mainOST.play();
 
 
@@ -685,22 +688,34 @@ public class HelloGame extends SceneGame {
           }
           case UP: {
            keyUpDown = ev.down;
-           shipPositionY-=20;
+           if(keyUpDown){
+           movingWay = "Up";
+           }
+           else{movingWay = "none";}
            break;
           }
           case DOWN: {
-           keyUpDown = ev.down;
-           shipPositionY+=20;
+           keyDownDown = ev.down;
+           if(keyDownDown){
+           movingWay = "Down";
+           }
+           else{movingWay = "none";}
            break;
           }
           case LEFT: {
-           keyUpDown = ev.down;
-           shipPositionX-=20;
+           keyLeftDown = ev.down;
+           if(keyLeftDown){
+           movingWay = "Left";
+           }
+           else{movingWay = "none";}
            break;
           }
           case RIGHT: {
-           keyUpDown = ev.down;
-           shipPositionX+=20;
+           keyRightDown = ev.down;
+           if(keyRightDown){
+           movingWay = "Right";
+           }
+           else{movingWay = "none";}
            break;
           }
           case W: {
