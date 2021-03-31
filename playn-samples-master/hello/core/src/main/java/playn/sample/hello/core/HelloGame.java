@@ -548,12 +548,12 @@ public class HelloGame extends SceneGame {
         switch (movingWay) {
           case "Left":      {shipPositionX+=10;break;}
           case "Right":     {shipPositionX-=10;break;}
-          case "Up":        {shipPositionY-=10;break;}
-          case "Down":      {shipPositionY+=10;break;}
-          case "LeftUp":    {shipPositionX+=10;shipPositionY-=10;break;}
-          case "RightUp":   {shipPositionX-=10;shipPositionY-=10;break;}
-          case "LeftDown":  {shipPositionX+=10;shipPositionY+=10;break;}
-          case "RightDown": {shipPositionX-=10;shipPositionY+=10;break;}
+          case "Up":        {shipPositionY+=10;break;}
+          case "Down":      {shipPositionY-=10;break;}
+          case "LeftUp":    {shipPositionX+=10;shipPositionY+=10;break;}
+          case "RightUp":   {shipPositionX-=10;shipPositionY+=10;break;}
+          case "LeftDown":  {shipPositionX+=10;shipPositionY-=10;break;}
+          case "RightDown": {shipPositionX-=10;shipPositionY-=10;break;}
           default : {break;}
         }
 
