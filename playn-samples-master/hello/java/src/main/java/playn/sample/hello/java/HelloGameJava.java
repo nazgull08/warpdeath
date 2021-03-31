@@ -25,6 +25,7 @@ public class HelloGameJava {
     config.width = 1920;
     config.height = 1080;
     config.appName = "Void Death";
+    config.fullscreen = true;
     LWJGLPlatform plat = new LWJGLPlatform(config);
     new HelloGame(plat);
     plat.start();

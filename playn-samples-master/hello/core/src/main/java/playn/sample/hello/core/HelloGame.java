@@ -38,6 +38,10 @@ import playn.core.Keyboard;
 import playn.core.Key;
 import playn.core.Sound;
 
+import playn.core.Mouse;
+import playn.core.Mouse.ButtonEvent;
+import playn.core.Mouse.MotionEvent;
+
 import playn.core.Tile;
 import react.RFuture;
 import react.Slot;
@@ -45,11 +49,16 @@ import java.util.ArrayList;
 import java.util.List;
 import react.UnitSlot;
 import static java.lang.Math.max;
+import pythagoras.f.IDimension;
+
 
 public class HelloGame extends SceneGame {
 
   Unit[] squad = new Unit[10]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
   int squadLimit = 4; // Текущий предел отряда
+
+  IDimension size = plat.graphics().screenSize();
+
 
   int selectedUnit = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
   int selectedUnitx = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
@@ -70,8 +79,16 @@ public class HelloGame extends SceneGame {
   int timerost = 0;
   int faceCoolDown = 20;
   int selectedTime = 0;
-  int selectedTimeCD = 40;
+  int selectedTimeCD = 20;
   int selectedTimeI = 1;
+
+
+  float cameraX = 0;
+  float cameraY = 0;
+
+  int shipPositionX = 0;
+  int shipPositionY = 0;
+
 
   int startdelay = 20;
 
@@ -80,14 +97,31 @@ public class HelloGame extends SceneGame {
   boolean animation = true;
   boolean speakAnimation = true;
 
-  boolean shiftDown, ctrlDown, tabDown, wDown, sDown, aDown, dDown;
+  boolean keyUpDown, keyDownDown, keyLeftDown, keyRightDown, shiftDown, ctrlDown, tabDown, wDown, sDown, aDown, dDown;
 
   Graphics gfx = plat.graphics();
 
   private boolean loaded;
 
+  String movingWay = "none";
 
   Image bgImage = plat.assets().getImage("images/twin.png");
+
+  Image wallU = plat.assets().getImage("images/floor/wallU.png");
+  Image wallR = plat.assets().getImage("images/floor/wallR.png");
+  Image wallF = plat.assets().getImage("images/floor/wallF.png");
+  Image empty = plat.assets().getImage("images/floor/emptiness.png");
+
+  Image selection1 = plat.assets().getImage("images/selection/sel1.png");
+  Image selection2 = plat.assets().getImage("images/selection/sel2.png");
+  Image selection3 = plat.assets().getImage("images/selection/sel3.png");
+  Image selection4 = plat.assets().getImage("images/selection/sel4.png");
+  Image selection5 = plat.assets().getImage("images/selection/sel5.png");
+  Image selection6 = plat.assets().getImage("images/selection/sel6.png");
+  Image selection7 = plat.assets().getImage("images/selection/sel7.png");
+  Image selection8 = plat.assets().getImage("images/selection/sel8.png");
+  Image selection9 = plat.assets().getImage("images/selection/sel9.png");
+
   Image flImage1 = plat.assets().getImage("images/floor/floor1.png");
   Image flImage11 = plat.assets().getImage("images/floor/floor11.png");
   Image flImage2 = plat.assets().getImage("images/floor/floor2.png");
@@ -102,8 +136,8 @@ public class HelloGame extends SceneGame {
 
   Image marineImage = plat.assets().getImage("images/marine.png");
   Image marinebImage = plat.assets().getImage("images/marineb.png");
-  Image commissionerImage = plat.assets().getImage("images/commissioner.png");
-  Image commissionerbImage = plat.assets().getImage("images/commissionerb.png");
+  Image commissionerImage = plat.assets().getImage("images/Commissioner.png");
+  Image commissionerbImage = plat.assets().getImage("images/Commissionerb.png");
 
   Image hudImage = plat.assets().getImage("images/Hud.png");
 
@@ -115,6 +149,7 @@ public class HelloGame extends SceneGame {
 
   Image imageM = plat.assets().getImage( "images/menu.png");
   Image menuWide = plat.assets().getImage( "images/menuWide.png");
+  Image menuH = plat.assets().getImage( "images/menuH.png");
 
 
   Sound mainOST = plat.assets().getMusic("sounds/1");
@@ -141,36 +176,46 @@ public class HelloGame extends SceneGame {
   GroupLayer Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
 
 
+  ShipFloor sFloor = new ShipFloor("Стальной пол", "Обычный, ничем не примечательный кусок стали", 100, "sF");
+  ShipFloor sWallF = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWF");
+  ShipFloor sWallU = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWFU");
+  ShipFloor sWallR = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWFR");
+  ShipFloor emptyF  = new ShipFloor("Межзвёздная пустота", "Обычный вакуум", 0, "emptyF");
+
+  ShipFloor[][] startShipForm = new ShipFloor[][]{
+    { emptyF, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    { sWallF, sWallF, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sWallF, emptyF, emptyF, sWallF, emptyF},
+    { sWallF, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sWallF, sWallF, sWallF, sFloor, sWallF},
+    { sWallF, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sWallF},
+    { sWallF, sFloor, sWallF, sFloor, sWallF, sWallF, sWallF, emptyF, sFloor, sFloor, sFloor, sFloor, sWallF},
+    { sWallF, sWallF, sFloor, sFloor, sFloor, sFloor, sWallF, emptyF, sFloor, sFloor, sFloor, sWallF, sWallF},
+    { emptyF, sWallF, sFloor, sFloor, sFloor, sFloor, sWallF, sWallF, sFloor, sWallF, sFloor, sWallF, emptyF},
+    { emptyF, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, emptyF, sWallF, emptyF, sWallF, emptyF, emptyF}
+  };
+
+  SpaceShip startShip = new SpaceShip("Победоносный", startShipForm);
+
   public final void redraw(){
     rootLayer.disposeAll(); //Чистим все слои, принадлежащие корневому слою.
     Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
     Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
+
     // ----------Background
     // Создаем задник
     ImageLayer bgLayer = new ImageLayer(bgImage);
-    bgLayer.setSize(plat.graphics().viewSize);
+    bgLayer.setSize(size);
     rootLayer.add(bgLayer); //Добавляем задник корневому слою
 
     // ----------Starship
+    rootLayer.add(Floorlayer);
+    new SpaceShipView(Floorlayer,startShip);
 
-    rootLayer.add(Floorlayer);    //Добавляем слой корабля корневому слою
-    int numList[][]=new int[masx][masy];
-    for (int i = ii; i < masx; i++) {
-      for (int j = jj; j < masy; j++) {
-        numList[i][j]=0;
-        if(selectedUnit == -1){
-          new Floor(Floorlayer, i*floorw, j*floorh, false);    //Заполняем групповой слой корабля тайлами пола
-        }
-        else {
-          if((i == selectedUnitx) && (j == selectedUnity)){
-            new Floor(Floorlayer, i*floorw, j*floorh, true);    //Заполняем групповой слой корабля тайлами пола
-          }
-          else {
-            new Floor(Floorlayer, i*floorw, j*floorh, false);    //Заполняем групповой слой корабля тайлами пола
-          }
-        }
-      }
-    }
+    // ----------Selection
+    if(selectedUnit!=-1) {
+      GroupLayer SelectionLayer = new GroupLayer(); //Создаем групповой слой выделения
+      rootLayer.add(SelectionLayer);
+      new SelectionView(SelectionLayer);
+    };
 
     // ----------Squad
     rootLayer.add(Squadlayer);    //Добавляем слой отряда корневому слою
@@ -181,14 +226,82 @@ public class HelloGame extends SceneGame {
     // ----------HUD
     if(showHUD) {
       final GroupLayer Hudlayer = new GroupLayer();
+      final GroupLayer UnitInfoLayer = new GroupLayer();
       rootLayer.add(Hudlayer);
+      rootLayer.add(UnitInfoLayer);
+      new HUD(Hudlayer,size.width(), size.height());
       if(selectedUnit==-1){
-        new UnitInfo(Hudlayer, hudx, hudy);
       } else {
-        new UnitInfo(Hudlayer, hudx, hudy, squad[selectedUnit]);
+        new UnitInfo(UnitInfoLayer, 0, size.height()-256, squad[selectedUnit]);
       }
     };
   };
+
+  public class Object {
+    public String name, description;
+    public int hp;
+  }
+
+  public class ShipFloor {
+    public String name, description, type;
+    public int hp;
+
+    ShipFloor (String n, String d, int h, String t){
+      name = n;
+      description = d;
+      hp = h;
+      type = t;
+    }
+  }
+
+  public class SpaceShip {
+    public String name;
+    public ShipFloor[][] floorArray;
+
+    SpaceShip (String n, ShipFloor[][] fArr){
+      name = n;
+      floorArray = fArr;
+    }
+  }
+
+  public class SelectionView {
+    public SelectionView(final GroupLayer SelectionLayer){
+      Image image = selection5;
+      if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 1)) {image = selection1;};
+      if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 2)) {image = selection2;};
+      if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 3)) {image = selection3;};
+      if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 4)) {image = selection4;};
+      if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 5)) {image = selection5;};
+      if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 6)) {image = selection6;};
+      if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 7)) {image = selection7;};
+      if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 8)) {image = selection8;};
+      if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 9)) {image = selection9;};
+      final ImageLayer layer = new ImageLayer(image);
+      layer.setOrigin(ImageLayer.Origin.UL);
+      SelectionLayer.addAt(layer, shipPositionX+squad[selectedUnit].posx*floorw, shipPositionY+squad[selectedUnit].posy*floorh);
+    }
+  }
+
+  public class SpaceShipView {
+    public SpaceShipView(final GroupLayer Floorlayer, SpaceShip s){
+      for (int i=0; i<s.floorArray.length;i++){
+        for(int j=0; j<s.floorArray[i].length;j++){
+          Image image = empty;
+          switch (s.floorArray[i][j].type) {
+            case "sF":{image = flImage1; break;}
+            case "emptyF":{image = empty; break;}
+            case "sWF":{image = wallF; break;}
+            case "sWFU":{image = wallU; break;}
+            case "sWFR":{image = wallR; break;}
+            default: break;
+          }
+          final ImageLayer layer = new ImageLayer(image);
+          layer.setOrigin(ImageLayer.Origin.UL);
+          Floorlayer.addAt(layer, shipPositionX+floorw*i, shipPositionY+floorh*j);
+        }
+      }
+    }
+  }
 
   public class Unit {//Класс юнита
     public String name, age, role;
@@ -245,7 +358,6 @@ public class HelloGame extends SceneGame {
     public Floor(final GroupLayer Floorlayer, float x, float y, boolean status) {
       Image image = flImage1;
       if (status){
-        //image = flActiveImage;
         if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 1)) {image = flImage11;};
         if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 2)) {image = flImage2;};
         if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 3)) {image = flImage3;};
@@ -283,25 +395,25 @@ public class HelloGame extends SceneGame {
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
+        Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
       }
       if(i==1)
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
+        Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
       }
       if(i==2)
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
+        Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
       }
       if(i==3)
       {
         final ImageLayer layer = new ImageLayer(cImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, unt.posx*floorw, unt.posy*floorh);
+        Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
       }
 
       //final ImageLayer layer = new ImageLayer(marineImage);
@@ -317,6 +429,14 @@ public class HelloGame extends SceneGame {
     }
   }
 
+  public class HUD {
+    public HUD(final GroupLayer Hudlayer, float sizeX, float sizeY){
+      final ImageLayer bottomHUD = new ImageLayer(menuWide);
+      final ImageLayer rightHUD = new ImageLayer(menuH);
+      Hudlayer.addAt(bottomHUD, 0, sizeY-256);
+      Hudlayer.addAt(rightHUD, sizeX-256, 0);
+    }
+  }
 
   public class UnitInfo {
     String fontName = "Impact";  // название шрифта
@@ -329,7 +449,7 @@ public class HelloGame extends SceneGame {
       return new ImageLayer(canvas.toTexture()); // запекаем холст, возвращаем в виде слоя
     }
 
-    public UnitInfo(final GroupLayer Hudlayer, float x, float y, Unit unt) // Коструктор 0, если выбран юнит
+    public UnitInfo(final GroupLayer UnitInfoLayer, float x, float y, Unit unt) // Коструктор 0, если выбран юнит
     {
       String hps = "hp: " + String.valueOf(unt.hp); // преобразуем число в строку
       String energys = "energy: " + String.valueOf(unt.energy);
@@ -384,31 +504,20 @@ public class HelloGame extends SceneGame {
         }
       }
 
-      final ImageLayer layer = new ImageLayer(menuWide); // создаем слой с картинкой на основе этой картинки
       final ImageLayer layerface = new ImageLayer(imageface);
-      layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
       layerface.setOrigin(ImageLayer.Origin.UL);
-      Hudlayer.addAt(layer, x, y);
-      Hudlayer.addAt(layerface, x+47+17, y+47+17);
-      Hudlayer.addAt(layerHP, x+220+100, y+30+15);
-      Hudlayer.addAt(layerEnergy, x+220+100, y+30+15+24);
-      Hudlayer.addAt(layerMind, x+220+100, y+30+15+15+24+10);
-      Hudlayer.addAt(layerMorale, x+220+100, y+30+15+15+24+10+24);
-      Hudlayer.addAt(layerHunger, x+220+100, y+30+15+15+24+10+48);
-      Hudlayer.addAt(layerThirst, x+220+100, y+30+15+15+24+10+48+24);
-      Hudlayer.addAt(layerFireres, x+410+100, y+30+15);
-      Hudlayer.addAt(layerElectres, x+410+100, y+30+15+24);
-      Hudlayer.addAt(layerBleedres, x+410+100, y+30+15+24+24);
-      Hudlayer.addAt(layerStunres, x+410+100, y+30+15+24+24+24);
-      Hudlayer.addAt(layerNames, x+410+100, y+30+15+24+24+24+24);
-
-    }
-
-    public UnitInfo(final GroupLayer Hudlayer, float x, float y) // Коструктор 1, если никто не выбран
-    {
-      final ImageLayer layer = new ImageLayer(menuWide); // создаем слой с картинкой на основе этой картинки
-      layer.setOrigin(ImageLayer.Origin.UL); // объекту layer устанавливается место отрисовки верхний левый угол
-      Hudlayer.addAt(layer, x, y);
+      UnitInfoLayer.addAt(layerface, x+47+17, y+47+17);
+      UnitInfoLayer.addAt(layerHP, x+220+100, y+30+15);
+      UnitInfoLayer.addAt(layerEnergy, x+220+100, y+30+15+24);
+      UnitInfoLayer.addAt(layerMind, x+220+100, y+30+15+15+24+10);
+      UnitInfoLayer.addAt(layerMorale, x+220+100, y+30+15+15+24+10+24);
+      UnitInfoLayer.addAt(layerHunger, x+220+100, y+30+15+15+24+10+48);
+      UnitInfoLayer.addAt(layerThirst, x+220+100, y+30+15+15+24+10+48+24);
+      UnitInfoLayer.addAt(layerFireres, x+410+100, y+30+15);
+      UnitInfoLayer.addAt(layerElectres, x+410+100, y+30+15+24);
+      UnitInfoLayer.addAt(layerBleedres, x+410+100, y+30+15+24+24);
+      UnitInfoLayer.addAt(layerStunres, x+410+100, y+30+15+24+24+24);
+      UnitInfoLayer.addAt(layerNames, x+410+100, y+30+15+24+24+24+24);
 
     }
   }
@@ -435,6 +544,18 @@ public class HelloGame extends SceneGame {
 
     update.connect(new Slot<Clock>() {
       public void onEmit (Clock clock) {
+
+        switch (movingWay) {
+          case "Left":      {shipPositionX+=10;break;}
+          case "Right":     {shipPositionX-=10;break;}
+          case "Up":        {shipPositionY-=10;break;}
+          case "Down":      {shipPositionY+=10;break;}
+          case "LeftUp":    {shipPositionX+=10;shipPositionY-=10;break;}
+          case "RightUp":   {shipPositionX-=10;shipPositionY-=10;break;}
+          case "LeftDown":  {shipPositionX+=10;shipPositionY+=10;break;}
+          case "RightDown": {shipPositionX-=10;shipPositionY+=10;break;}
+          default : {break;}
+        }
 
         if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 1)) {
           selectedTime++;
@@ -513,13 +634,73 @@ public class HelloGame extends SceneGame {
       mainOST.play();
 
 
+
+    plat.input().mouseEvents.connect(new Mouse.MotionSlot() {
+      public void onEmit (Mouse.MotionEvent event) {
+        if((event.x() < 15) && (event.y() < 15))
+        {
+          movingWay = "LeftUp";
+        }else{
+          if((event.x() > (size.width()-15) ) && (event.y() < 15 )){
+            movingWay = "RightUp";
+          }else{
+            if((event.x() < 15) && (event.y() > (size.height()-15) )){
+              movingWay = "LeftDown";
+            }else{
+              if((event.x() > (size.width()-15)) && (event.y() > (size.height()-15) )){
+                movingWay = "RightDown";
+              }else{
+                if(event.x() < 15){
+                  movingWay = "Left";
+                }else{
+                  if(event.x() > (size.width()-15)){
+                    movingWay = "Right";
+                  }else{
+                    if(event.y() < 15){
+                      movingWay = "Up";
+                    }else{
+                      if(event.y() > (size.height()-15)){
+                        movingWay = "Down";
+                      }else{
+                        movingWay = "None";
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+      };
+    });
+
     // Обработчик клавиатуры
     plat.input().keyboardEvents.connect(new Keyboard.KeySlot() {
       public void onEmit (Keyboard.KeyEvent ev) {
         switch (ev.key) {
           case SHIFT: {
            shiftDown = ev.down;
-//           redraw();
+           break;
+          }
+          case UP: {
+           keyUpDown = ev.down;
+           shipPositionY-=20;
+           break;
+          }
+          case DOWN: {
+           keyUpDown = ev.down;
+           shipPositionY+=20;
+           break;
+          }
+          case LEFT: {
+           keyUpDown = ev.down;
+           shipPositionX-=20;
+           break;
+          }
+          case RIGHT: {
+           keyUpDown = ev.down;
+           shipPositionX+=20;
            break;
           }
           case W: {
@@ -529,7 +710,6 @@ public class HelloGame extends SceneGame {
              {
                squad[selectedUnit].posy = squad[selectedUnit].posy -1;
                selectedUnity--;
-      //         new Floor(Floorlayer, squad[selectedUnit].posx*floorw, squad[selectedUnit].posy*floorh, true);
              };
            };
            break;
@@ -578,7 +758,6 @@ public class HelloGame extends SceneGame {
               rootLayer.add(Menulayer);
               new Menu(Menulayer,hudx, hudy);
             }
-  //          redraw();
             break;
           }
           case TAB:{
@@ -586,7 +765,6 @@ public class HelloGame extends SceneGame {
             if (!tabDown){
               showHUD = !showHUD;
             }
-//            redraw();
             break;
           }
           default: break;
@@ -598,6 +776,7 @@ public class HelloGame extends SceneGame {
     // combine mouse and touch into pointer events
     pointer = new Pointer(plat);
 
+
     // Обработчик мыши
     pointer.events.connect(new Slot<Pointer.Event>() {
 
@@ -605,15 +784,13 @@ public class HelloGame extends SceneGame {
       @Override public void onEmit (Pointer.Event event) {
 
         if (event.kind.isStart) {
-          String x=String.valueOf(event.x());
-          String y=String.valueOf(event.y());
 
           selectedUnit = -1;
           for(int i=0; i<squadLimit;i++){
-            if ((event.x() >= squad[i].posx*floorw) && (event.x() <= (squad[i].posx+1)*floorw) && (event.y() >= squad[i].posy*floorh) && (event.y() <= (squad[i].posy+1)*floorh)){
+            if ((event.x() >= shipPositionX+squad[i].posx*floorw) && (event.x() <= shipPositionX+(squad[i].posx+1)*floorw) && (event.y() >= shipPositionY+squad[i].posy*floorh) && (event.y() <= shipPositionY+(squad[i].posy+1)*floorh)){
               selectedUnit=i;
-              selectedUnity=squad[i].posy;
-              selectedUnitx=squad[i].posx;
+              selectedUnitx=shipPositionX+squad[i].posx*floorw;
+              selectedUnity=shipPositionY+squad[i].posy*floorh;
 
 
               if (i == 3){
@@ -642,7 +819,12 @@ public class HelloGame extends SceneGame {
 
             }
           };
-          if ((selectedUnit== -1) && (event.x() <=10*floorw) && (event.y() <=10*floorh)){
+          if ((selectedUnit== -1) &&
+              (event.x() <=shipPositionX+startShip.floorArray.length*floorw ) &&
+              (event.y() <=shipPositionY+startShip.floorArray[0].length*floorh) &&
+              (event.x() >= shipPositionX) &&
+              (event.y() >= shipPositionY)
+              ){
             landSounds[0].play();
           }
         };
