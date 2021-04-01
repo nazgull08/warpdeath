@@ -810,7 +810,7 @@ public class HelloGame extends SceneGame {
 
               if (i == 3){
                     if (soundCoolDown3 <= 0){
-                      commissionerSounds[soundCounter3].setVolume(0.1f);
+                      commissionerSounds[soundCounter3].setVolume(0.05f);
                       commissionerSounds[soundCounter3].play();    //воспроизведение звуков
                       soundCounter3++;     //счетчик реплик
                       soundCoolDown3 = 100;   // установка кд реплики
