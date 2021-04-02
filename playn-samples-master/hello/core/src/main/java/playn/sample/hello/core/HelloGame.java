@@ -57,7 +57,7 @@ public class HelloGame extends SceneGame {
   Unit[] squad = new Unit[10]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
   Object[] objectArr = new Object[24*12];
   int squadLimit = 4; // Текущий предел отряда
-  int objectLimit = 1; // Текущий предел отряда
+  int objectLimit = 0; // Текущий предел отряда
 
   IDimension size = plat.graphics().screenSize();
 
@@ -114,6 +114,7 @@ public class HelloGame extends SceneGame {
   Image wallF = plat.assets().getImage("images/floor/wallF.png");
   Image walFb = plat.assets().getImage("images/floor/wallFb.png");
   Image empty = plat.assets().getImage("images/floor/emptiness.png");
+  Image emptyB = plat.assets().getImage("images/floor/emptiness.png");
   Image passUp = plat.assets().getImage("images/floor/passup.png");
   Image passAll = plat.assets().getImage("images/floor/passall.png");
   Image passGor = plat.assets().getImage("images/floor/passgor.png");
@@ -121,6 +122,10 @@ public class HelloGame extends SceneGame {
   Image passTb = plat.assets().getImage("images/floor/passtb.png");
 
   Image newwall = plat.assets().getImage("images/floor/newwall.png");
+  Image doorO = plat.assets().getImage("images/floor/dooropen.png");
+  Image doorC = plat.assets().getImage("images/floor/doorclosed.png");
+  Image hullO = plat.assets().getImage("images/floor/hullopen.png");
+  Image hullC = plat.assets().getImage("images/floor/hullclosed.png");
 
   Image selection1 = plat.assets().getImage("images/selection/sel1.png");
   Image selection2 = plat.assets().getImage("images/selection/sel2.png");
@@ -198,20 +203,21 @@ public class HelloGame extends SceneGame {
   ShipFloor sPassT = new ShipFloor("Дорога", "Стандартная стальная обшивка", 100, "sFT");
   ShipFloor sPasTb = new ShipFloor("Дорога", "Стандартная стальная обшивка", 100, "sFTb");
   ShipFloor emptyF  = new ShipFloor("Межзвёздная пустота", "Обычный вакуум", 0, "emptyF");
+  ShipFloor emptyb  = new ShipFloor("Межзвёздная пустота", "Обычный вакуум", 0, "emptyb");
 
   ShipFloor[][] startShipForm = new ShipFloor[][]{
     {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, sWalFb, sPassU, sPassU, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, sWalFb, emptyb, emptyb, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
     {emptyF, emptyF, emptyF, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sFloor, sFloor, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
     {emptyF, emptyF, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sWalFb, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
     {sWalFb, sWalFb, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb},
-    {sPassG, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sFloor, sWalFb},
+    {emptyb, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sFloor, sWalFb},
     {sWalFb, sFloor, sWalFb, sFloor, sFloor, sWalFb, sWalFb, sFloor, sFloor, sWalFb, sWalFb, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sFloor, sFloor, sWalFb, sFloor, sWalFb},
-    {sPassG, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sPassG, sFloor, sFloor, sPassG, sFloor, sWalFb},
+    {emptyb, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sPassG, sFloor, sFloor, sPassG, sFloor, sWalFb},
     {sWalFb, sWalFb, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb},
     {emptyF, emptyF, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sWalFb, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
     {emptyF, emptyF, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sFloor, sFloor, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, sWalFb, sPassU, sPassU, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, sWalFb, emptyb, emptyb, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
     {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF}
   };
 
@@ -271,13 +277,15 @@ public class HelloGame extends SceneGame {
   public class Object {
     public String name, description, type;
     public int hp, x, y;
-    Object (String n, String d, int h, int xx, int yy, String t){
+    public boolean passability;
+    Object (String n, String d, int h, int xx, int yy, String t, boolean p){
       name = n;
       description = d;
       hp = h;
       type = t;
       x = xx;
       y = yy;
+      passability = p;
     }
   }
 
@@ -353,6 +361,10 @@ public class HelloGame extends SceneGame {
           Image image = empty;
           switch (o.type) {
             case "hull":{image = newwall; break;}
+            case "doorclosed":{image = doorC; break;}
+            case "dooropen":{image = doorO; break;}
+            case "hullC":{image = hullC; break;}
+            case "hullO":{image = hullO; break;}
             default: break;
           }
           final ImageLayer layer = new ImageLayer(image);
@@ -576,7 +588,10 @@ public class HelloGame extends SceneGame {
     Unit ray = new Unit("Ray","40","Medic", 75 ,75, 20, 6, 11, 42); //Создаем Рейнора с координатами 0 2
     Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 22, 7); //Создаем Рейнора с координатами 0 2
 
-    Object hullblock = new Object("Стена","Обшивка", 100, 5, 5, "hull");
+
+    Object hullblock = new Object("Стена","Обшивка", 100, 5, 5, "hull", false);
+    Object dooropen = new Object("Стена","Обшивка", 100, -100, -100, "dooropen", true);
+    Object doorclosed = new Object("Стена","Обшивка", 100, -101, -101, "doorclosed", false);
 
     objectArr[0] = hullblock;
 
@@ -585,29 +600,41 @@ public class HelloGame extends SceneGame {
     squad[2] = ray; // Добавляем Рейнора в отряд
     squad[3] = commissioner; // Добавляем Рейнора в отряд
 
+
+    objectLimit = 0;
+    for(int i = 0; i < startShip.floorArray.length; i++){
+      for(int j = 0; j < startShip.floorArray[0].length; j++){
+        if (startShip.floorArray[i][j].type == "sWFb"){
+          objectArr[objectLimit] = new Object("Стена","Обшивка", 100, j, i, "hull", false);
+          objectLimit++;
+        }
+        if ((startShip.floorArray[i][j].type == "sFUP") || (startShip.floorArray[i][j].type == "sFGOR")){
+          objectArr[objectLimit] = new Object("Дверь","Проход", 100, j, i, "doorclosed", false);
+          objectLimit++;
+        }
+        if (startShip.floorArray[i][j].type == "emptyb"){
+          objectArr[objectLimit] = new Object("Шлюз","Проход", 100, j, i, "hullC", false);
+          objectLimit++;
+        }
+      }
+    }
+
+
     update.connect(new Slot<Clock>() {
       public void onEmit (Clock clock) {
 
 
-        objectLimit = 0;
-        for(int i = 0; i < startShip.floorArray.length; i++){
-          for(int j = 0; j < startShip.floorArray[0].length; j++){
-            if (startShip.floorArray[i][j].type == "sWFb"){
-              objectArr[objectLimit] = new Object("Стена","Обшивка", 100, j, i, "hull");
-              objectLimit++;
-            }
-          }
-        }
+
 
         switch (movingWay) {
-          case "Left":      {shipPositionX+=10;break;}
-          case "Right":     {shipPositionX-=10;break;}
-          case "Up":        {shipPositionY+=10;break;}
-          case "Down":      {shipPositionY-=10;break;}
-          case "LeftUp":    {shipPositionX+=10;shipPositionY+=10;break;}
-          case "RightUp":   {shipPositionX-=10;shipPositionY+=10;break;}
-          case "LeftDown":  {shipPositionX+=10;shipPositionY-=10;break;}
-          case "RightDown": {shipPositionX-=10;shipPositionY-=10;break;}
+          case "Left":      {shipPositionX+=22;break;}
+          case "Right":     {shipPositionX-=22;break;}
+          case "Up":        {shipPositionY+=22;break;}
+          case "Down":      {shipPositionY-=22;break;}
+          case "LeftUp":    {shipPositionX+=22;shipPositionY+=22;break;}
+          case "RightUp":   {shipPositionX-=22;shipPositionY+=22;break;}
+          case "LeftDown":  {shipPositionX+=22;shipPositionY-=22;break;}
+          case "RightDown": {shipPositionX-=22;shipPositionY-=22;break;}
           default : {break;}
         }
 
@@ -775,7 +802,7 @@ public class HelloGame extends SceneGame {
              boolean nowall = true;
              for (int i = 0; i < objectLimit; i++){
                if ((objectArr[i].x == squad[selectedUnit].posx) && (objectArr[i].y == (squad[selectedUnit].posy-1))){
-                 nowall = false;
+                 nowall = objectArr[i].passability;
                  break;
                }
              }
@@ -793,7 +820,7 @@ public class HelloGame extends SceneGame {
              boolean nowall = true;
              for (int i = 0; i < objectLimit; i++){
                if ((objectArr[i].x == squad[selectedUnit].posx) && (objectArr[i].y == (squad[selectedUnit].posy+1))){
-                 nowall = false;
+                 nowall = objectArr[i].passability;
                  break;
                }
              }
@@ -811,7 +838,7 @@ public class HelloGame extends SceneGame {
              boolean nowall = true;
              for (int i = 0; i < objectLimit; i++){
                if ((objectArr[i].x == (squad[selectedUnit].posx-1)) && (objectArr[i].y == squad[selectedUnit].posy)){
-                 nowall = false;
+                 nowall = objectArr[i].passability;
                  break;
                }
              }
@@ -829,7 +856,7 @@ public class HelloGame extends SceneGame {
                boolean nowall = true;
                for (int i = 0; i < objectLimit; i++){
                  if ((objectArr[i].x == (squad[selectedUnit].posx+1)) && (objectArr[i].y == squad[selectedUnit].posy)){
-                   nowall = false;
+                   nowall = objectArr[i].passability;
                    break;
                  }
                }
@@ -844,10 +871,39 @@ public class HelloGame extends SceneGame {
           case CONTROL:{
             ctrlDown = ev.down;
             if (ctrlDown){
-              final GroupLayer Menulayer = new GroupLayer();
-              rootLayer.add(Menulayer);
-              new Menu(Menulayer,hudx, hudy);
-            }
+              for(int i=0; i<objectLimit; i++){
+                if ((objectArr[i].x >= squad[selectedUnit].posx-1) && (objectArr[i].x <= squad[selectedUnit].posx+1) && (objectArr[i].y >= squad[selectedUnit].posy-1) && (objectArr[i].y <= squad[selectedUnit].posy+1))
+                {
+                  switch(objectArr[i].type){
+                    case "doorclosed":{
+                      objectArr[i].type = "dooropen";
+                      objectArr[i].passability = true;
+                      landSounds[0].play();
+                      break;
+                    }
+                    case "dooropen":{
+                      objectArr[i].type = "doorclosed";
+                       objectArr[i].passability = false;
+                       landSounds[0].play();
+                       break;
+                    }
+                    case "hullC":{
+                      objectArr[i].type = "hullO";
+                       objectArr[i].passability = true;
+                       landSounds[0].play();
+                       break;
+                    }
+                    case "hullO":{
+                      objectArr[i].type = "hullC";
+                       objectArr[i].passability = false;
+                       landSounds[0].play();
+                       break;
+                    }
+                  }
+                }
+
+              }
+            };
             break;
           }
           case TAB:{
