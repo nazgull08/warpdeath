@@ -55,6 +55,7 @@ import pythagoras.f.IDimension;
 public class HelloGame extends SceneGame {
 
   Unit[] squad = new Unit[10]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
+  Object[] objectArr = new Object[10];
   int squadLimit = 4; // Текущий предел отряда
 
   IDimension size = plat.graphics().screenSize();
@@ -110,8 +111,15 @@ public class HelloGame extends SceneGame {
   Image wallU = plat.assets().getImage("images/floor/wallU.png");
   Image wallR = plat.assets().getImage("images/floor/wallR.png");
   Image wallF = plat.assets().getImage("images/floor/wallF.png");
+  Image walFb = plat.assets().getImage("images/floor/wallFb.png");
   Image empty = plat.assets().getImage("images/floor/emptiness.png");
   Image passUp = plat.assets().getImage("images/floor/passup.png");
+  Image passAll = plat.assets().getImage("images/floor/passall.png");
+  Image passGor = plat.assets().getImage("images/floor/passgor.png");
+  Image passT = plat.assets().getImage("images/floor/passt.png");
+  Image passTb = plat.assets().getImage("images/floor/passtb.png");
+
+  Image newwall = plat.assets().getImage("images/floor/newwall.png");
 
   Image selection1 = plat.assets().getImage("images/selection/sel1.png");
   Image selection2 = plat.assets().getImage("images/selection/sel2.png");
@@ -135,10 +143,10 @@ public class HelloGame extends SceneGame {
   Image flsImage = plat.assets().getImage("images/floor/floors.png");
   Image flActiveImage = plat.assets().getImage("images/floor/floora.png");
 
-  Image marineImage = plat.assets().getImage("images/marine.png");
-  Image marinebImage = plat.assets().getImage("images/marineb.png");
-  Image commissionerImage = plat.assets().getImage("images/Commissioner.png");
-  Image commissionerbImage = plat.assets().getImage("images/Commissionerb.png");
+  Image marineImage = plat.assets().getImage("images/models/marine.png");
+  Image marinebImage = plat.assets().getImage("images/models/marineb.png");
+  Image commissionerImage = plat.assets().getImage("images/models/Commissioner.png");
+  Image commissionerbImage = plat.assets().getImage("images/models/Commissionerb.png");
 
   Image hudImage = plat.assets().getImage("images/Hud.png");
 
@@ -175,24 +183,33 @@ public class HelloGame extends SceneGame {
 
   GroupLayer Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
   GroupLayer Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
+  GroupLayer Objectlayer = new GroupLayer();
 
 
   ShipFloor sFloor = new ShipFloor("Стальной пол", "Обычный, ничем не примечательный кусок стали", 100, "sF");
   ShipFloor sWallF = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWF");
+  ShipFloor sWalFb = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWFb");
   ShipFloor sWallU = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWFU");
   ShipFloor sWallR = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWFR");
   ShipFloor sPassU = new ShipFloor("Дорога", "Стандартная стальная обшивка", 100, "sFUP");
+  ShipFloor sPassA = new ShipFloor("Дорога", "Стандартная стальная обшивка", 100, "sFAll");
+  ShipFloor sPassG = new ShipFloor("Дорога", "Стандартная стальная обшивка", 100, "sFGOR");
+  ShipFloor sPassT = new ShipFloor("Дорога", "Стандартная стальная обшивка", 100, "sFT");
+  ShipFloor sPasTb = new ShipFloor("Дорога", "Стандартная стальная обшивка", 100, "sFTb");
   ShipFloor emptyF  = new ShipFloor("Межзвёздная пустота", "Обычный вакуум", 0, "emptyF");
 
   ShipFloor[][] startShipForm = new ShipFloor[][]{
-    { emptyF, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, emptyF, emptyF, emptyF, emptyF, sWallR},
-    { sWallF, sWallF, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sWallF, emptyF, emptyF, sWallF, emptyF},
-    { sWallF, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sWallF, sWallF, sWallF, sFloor, sWallF},
-    { sWallF, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sPassU, sFloor, sFloor, sFloor, sWallF},
-    { sWallF, sFloor, sWallF, sFloor, sWallF, sWallF, sWallF, emptyF, sPassU, sFloor, sFloor, sFloor, sWallF},
-    { sWallF, sWallF, sFloor, sFloor, sFloor, sFloor, sWallF, emptyF, sPassU, sFloor, sFloor, sWallF, sWallF},
-    { emptyF, sWallF, sFloor, sFloor, sFloor, sFloor, sWallF, sWallF, sPassU, sWallF, sFloor, sWallF, emptyF},
-    { sWallR, sWallF, sWallF, sWallF, sWallF, sWallF, sWallF, emptyF, sWallF, emptyF, sWallF, emptyF, emptyF}
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF}
   };
 
   SpaceShip startShip = new SpaceShip("Победоносный", startShipForm);
@@ -208,9 +225,18 @@ public class HelloGame extends SceneGame {
     bgLayer.setSize(size);
     rootLayer.add(bgLayer); //Добавляем задник корневому слою
 
+
     // ----------Starship
     rootLayer.add(Floorlayer);
     new SpaceShipView(Floorlayer,startShip);
+
+    // ----------Objects
+    Objectlayer = new GroupLayer();
+    rootLayer.add(Objectlayer);
+    for (int i=0; i<objectArr.length; i++){
+      new ObjectView(Objectlayer, objectArr[i]);
+    }
+
 
     // ----------Selection
     if(selectedUnit!=-1) {
@@ -240,8 +266,16 @@ public class HelloGame extends SceneGame {
   };
 
   public class Object {
-    public String name, description;
-    public int hp;
+    public String name, description, type;
+    public int hp, x, y;
+    Object (String n, String d, int h, int xx, int yy, String t){
+      name = n;
+      description = d;
+      hp = h;
+      type = t;
+      x = xx;
+      y = yy;
+    }
   }
 
   public class ShipFloor {
@@ -293,9 +327,14 @@ public class HelloGame extends SceneGame {
             case "sF":{image = flImage1; break;}
             case "emptyF":{image = empty; break;}
             case "sWF":{image = wallF; break;}
+            case "sWFb":{image = walFb; break;}
             case "sWFU":{image = wallU; break;}
             case "sWFR":{image = wallR; break;}
             case "sFUP":{image = passUp; break;}
+            case "sFAll":{image = passAll; break;}
+            case "sFGOR":{image = passGor; break;}
+            case "sFT":{image = passT; break;}
+            case "sFTb":{image = passTb; break;}
             default: break;
           }
           final ImageLayer layer = new ImageLayer(image);
@@ -305,6 +344,20 @@ public class HelloGame extends SceneGame {
       }
     }
   }
+
+  public class ObjectView {
+    public ObjectView(final GroupLayer Objectlayer, Object o){
+          Image image = empty;
+          switch (o.type) {
+            case "hull":{image = newwall; break;}
+            default: break;
+          }
+          final ImageLayer layer = new ImageLayer(image);
+          layer.setOrigin(ImageLayer.Origin.UL);
+          Objectlayer.addAt(layer, shipPositionX+floorw*o.x, shipPositionY+floorh*o.y);
+        }
+      }
+
 
   public class Unit {//Класс юнита
     public String name, age, role;
@@ -518,7 +571,11 @@ public class HelloGame extends SceneGame {
     Unit tychus = new Unit("Тайкус","40","Танк",200,100, 5, 5, 142, 242); //Создаем Тайкуса в c координатами 3 5
     Unit raynor = new Unit("Рейнор","40","ДД",150,150, 5, 2, 422, 144); //Создаем Рейнора с координатами 0 2
     Unit ray = new Unit("Ray","40","Medic", 75 ,75, 4, 3, 11, 42); //Создаем Рейнора с координатами 0 2
-    Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 8, 6); //Создаем Рейнора с координатами 0 2
+    Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 0, 0); //Создаем Рейнора с координатами 0 2
+
+    Object hullblock = new Object("Стена","Обшивка", 100, 5, 5, "hull");
+
+    objectArr[0] = hullblock;
 
     squad[0] = tychus; // Добавляем Тайкуса в отряд
     squad[1] = raynor; // Добавляем Рейнора в отряд

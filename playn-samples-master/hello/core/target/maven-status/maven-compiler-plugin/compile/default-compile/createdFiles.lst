@@ -4,4 +4,5 @@ playn\sample\hello\core\HelloGame$ShipFloor.class
 playn\sample\hello\core\HelloGame$SpaceShipView.class
 playn\sample\hello\core\HelloGame$SelectionView.class
 playn\sample\hello\core\HelloGame$HUD.class
+playn\sample\hello\core\HelloGame$ObjectView.class
 playn\sample\hello\core\HelloGame$5.class
