@@ -356,27 +356,7 @@ public class HelloGame extends SceneGame {
 
   }
 
-  public class Floor {
 
-    public Floor(final GroupLayer Floorlayer, float x, float y, boolean status) {
-      Image image = flImage1;
-      if (status){
-        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 1)) {image = flImage11;};
-        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 2)) {image = flImage2;};
-        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 3)) {image = flImage3;};
-        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 4)) {image = flImage4;};
-        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 5)) {image = flImage5;};
-        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 6)) {image = flImage6;};
-        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 7)) {image = flImage7;};
-        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 8)) {image = flImage8;};
-        if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 9)) {image = flsImage;};
-
-      }
-      final ImageLayer layer = new ImageLayer(image);
-      layer.setOrigin(ImageLayer.Origin.UL);
-      Floorlayer.addAt(layer, x, y);
-    }
-  }
 
   public class SquadView {
 
@@ -721,11 +701,8 @@ public class HelloGame extends SceneGame {
           case W: {
            wDown = ev.down;
            if(wDown){
-             if((selectedUnit > -1) && (squad[selectedUnit].posy > jj))
-             {
-               squad[selectedUnit].posy = squad[selectedUnit].posy -1;
-               selectedUnity--;
-             };
+             squad[selectedUnit].posy = squad[selectedUnit].posy -1;
+             selectedUnity--;
            };
            break;
           }
@@ -733,11 +710,8 @@ public class HelloGame extends SceneGame {
           case S: {
            sDown = ev.down;
            if(sDown){
-             if((selectedUnit > -1) && (squad[selectedUnit].posy < masy-1))
-             {
-               squad[selectedUnit].posy = squad[selectedUnit].posy +1;
-               selectedUnity++;
-             };
+             squad[selectedUnit].posy = squad[selectedUnit].posy +1;
+             selectedUnity++;
            };
            break;
           }
@@ -745,11 +719,8 @@ public class HelloGame extends SceneGame {
           case A: {
            aDown = ev.down;
            if(aDown){
-             if((selectedUnit > -1) && (squad[selectedUnit].posx > ii))
-             {
-               squad[selectedUnit].posx = squad[selectedUnit].posx -1;
-               selectedUnitx--;
-             };
+             squad[selectedUnit].posx = squad[selectedUnit].posx -1;
+             selectedUnitx--;
            };
            break;
           }
@@ -757,11 +728,8 @@ public class HelloGame extends SceneGame {
           case D: {
            dDown = ev.down;
            if(dDown){
-             if((selectedUnit > -1) && (squad[selectedUnit].posx < masx-1))
-             {
-               squad[selectedUnit].posx = squad[selectedUnit].posx +1;
-               selectedUnitx++;
-             };
+             squad[selectedUnit].posx = squad[selectedUnit].posx +1;
+             selectedUnitx++;
            };
            break;
           }
