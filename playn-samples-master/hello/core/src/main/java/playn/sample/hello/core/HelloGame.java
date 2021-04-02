@@ -55,8 +55,9 @@ import pythagoras.f.IDimension;
 public class HelloGame extends SceneGame {
 
   Unit[] squad = new Unit[10]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
-  Object[] objectArr = new Object[10];
+  Object[] objectArr = new Object[24*12];
   int squadLimit = 4; // Текущий предел отряда
+  int objectLimit = 1; // Текущий предел отряда
 
   IDimension size = plat.graphics().screenSize();
 
@@ -199,17 +200,19 @@ public class HelloGame extends SceneGame {
   ShipFloor emptyF  = new ShipFloor("Межзвёздная пустота", "Обычный вакуум", 0, "emptyF");
 
   ShipFloor[][] startShipForm = new ShipFloor[][]{
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
-    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF}
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, sWalFb, sPassU, sPassU, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sFloor, sFloor, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sWalFb, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {sWalFb, sWalFb, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb},
+    {sPassG, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sFloor, sWalFb},
+    {sWalFb, sFloor, sWalFb, sFloor, sFloor, sWalFb, sWalFb, sFloor, sFloor, sWalFb, sWalFb, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sFloor, sFloor, sWalFb, sFloor, sWalFb},
+    {sPassG, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sPassG, sFloor, sFloor, sPassG, sFloor, sWalFb},
+    {sWalFb, sWalFb, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb},
+    {emptyF, emptyF, sWalFb, sFloor, sFloor, sPassG, sFloor, sFloor, sWalFb, sWalFb, sWalFb, sPassU, sWalFb, sWalFb, sWalFb, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sFloor, sFloor, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, sWalFb, sPassU, sPassU, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
+    {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF}
   };
 
   SpaceShip startShip = new SpaceShip("Победоносный", startShipForm);
@@ -233,7 +236,7 @@ public class HelloGame extends SceneGame {
     // ----------Objects
     Objectlayer = new GroupLayer();
     rootLayer.add(Objectlayer);
-    for (int i=0; i<objectArr.length; i++){
+    for (int i=0; i<objectLimit; i++){
       new ObjectView(Objectlayer, objectArr[i]);
     }
 
@@ -568,10 +571,10 @@ public class HelloGame extends SceneGame {
   public HelloGame(Platform plat) {
     super(plat, 25); // 25 millis per frame = ~40fps
 
-    Unit tychus = new Unit("Тайкус","40","Танк",200,100, 5, 5, 142, 242); //Создаем Тайкуса в c координатами 3 5
-    Unit raynor = new Unit("Рейнор","40","ДД",150,150, 5, 2, 422, 144); //Создаем Рейнора с координатами 0 2
-    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 4, 3, 11, 42); //Создаем Рейнора с координатами 0 2
-    Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 0, 0); //Создаем Рейнора с координатами 0 2
+    Unit tychus = new Unit("Тайкус","40","Танк",200,100, 19, 5, 142, 242); //Создаем Тайкуса в c координатами 3 5
+    Unit raynor = new Unit("Рейнор","40","ДД",150,150, 20, 7, 422, 144); //Создаем Рейнора с координатами 0 2
+    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 20, 6, 11, 42); //Создаем Рейнора с координатами 0 2
+    Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 22, 7); //Создаем Рейнора с координатами 0 2
 
     Object hullblock = new Object("Стена","Обшивка", 100, 5, 5, "hull");
 
@@ -584,6 +587,17 @@ public class HelloGame extends SceneGame {
 
     update.connect(new Slot<Clock>() {
       public void onEmit (Clock clock) {
+
+
+        objectLimit = 0;
+        for(int i = 0; i < startShip.floorArray.length; i++){
+          for(int j = 0; j < startShip.floorArray[0].length; j++){
+            if (startShip.floorArray[i][j].type == "sWFb"){
+              objectArr[objectLimit] = new Object("Стена","Обшивка", 100, j, i, "hull");
+              objectLimit++;
+            }
+          }
+        }
 
         switch (movingWay) {
           case "Left":      {shipPositionX+=10;break;}
@@ -758,8 +772,17 @@ public class HelloGame extends SceneGame {
           case W: {
            wDown = ev.down;
            if(wDown){
-             squad[selectedUnit].posy = squad[selectedUnit].posy -1;
-             selectedUnity--;
+             boolean nowall = true;
+             for (int i = 0; i < objectLimit; i++){
+               if ((objectArr[i].x == squad[selectedUnit].posx) && (objectArr[i].y == (squad[selectedUnit].posy-1))){
+                 nowall = false;
+                 break;
+               }
+             }
+             if (nowall){
+               squad[selectedUnit].posy = squad[selectedUnit].posy -1;
+               selectedUnity--;
+             }
            };
            break;
           }
@@ -767,8 +790,17 @@ public class HelloGame extends SceneGame {
           case S: {
            sDown = ev.down;
            if(sDown){
-             squad[selectedUnit].posy = squad[selectedUnit].posy +1;
-             selectedUnity++;
+             boolean nowall = true;
+             for (int i = 0; i < objectLimit; i++){
+               if ((objectArr[i].x == squad[selectedUnit].posx) && (objectArr[i].y == (squad[selectedUnit].posy+1))){
+                 nowall = false;
+                 break;
+               }
+             }
+             if (nowall){
+               squad[selectedUnit].posy = squad[selectedUnit].posy +1;
+               selectedUnity--;
+             }
            };
            break;
           }
@@ -776,8 +808,17 @@ public class HelloGame extends SceneGame {
           case A: {
            aDown = ev.down;
            if(aDown){
-             squad[selectedUnit].posx = squad[selectedUnit].posx -1;
-             selectedUnitx--;
+             boolean nowall = true;
+             for (int i = 0; i < objectLimit; i++){
+               if ((objectArr[i].x == (squad[selectedUnit].posx-1)) && (objectArr[i].y == squad[selectedUnit].posy)){
+                 nowall = false;
+                 break;
+               }
+             }
+             if (nowall){
+               squad[selectedUnit].posx = squad[selectedUnit].posx -1;
+               selectedUnity--;
+             }
            };
            break;
           }
@@ -785,8 +826,17 @@ public class HelloGame extends SceneGame {
           case D: {
            dDown = ev.down;
            if(dDown){
-             squad[selectedUnit].posx = squad[selectedUnit].posx +1;
-             selectedUnitx++;
+               boolean nowall = true;
+               for (int i = 0; i < objectLimit; i++){
+                 if ((objectArr[i].x == (squad[selectedUnit].posx+1)) && (objectArr[i].y == squad[selectedUnit].posy)){
+                   nowall = false;
+                   break;
+                 }
+               }
+               if (nowall){
+                 squad[selectedUnit].posx = squad[selectedUnit].posx +1;
+                 selectedUnity--;
+               }
            };
            break;
           }
