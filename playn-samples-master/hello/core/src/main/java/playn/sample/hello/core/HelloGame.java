@@ -46,7 +46,9 @@ import playn.core.Tile;
 import react.RFuture;
 import react.Slot;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Comparator;
 import react.UnitSlot;
 import static java.lang.Math.max;
 import pythagoras.f.IDimension;
@@ -58,6 +60,7 @@ public class HelloGame extends SceneGame {
   Object[] objectArr = new Object[24*12];
   int squadLimit = 4; // Текущий предел отряда
   int objectLimit = 0; // Текущий предел отряда
+  Unit turnfirst[] = new Unit[squadLimit]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
 
   IDimension size = plat.graphics().screenSize();
 
@@ -83,7 +86,8 @@ public class HelloGame extends SceneGame {
   int selectedTime = 0;
   int selectedTimeCD = 20;
   int selectedTimeI = 1;
-
+  int maxin = -10;
+  int muving = 0;
 
   float cameraX = 0;
   float cameraY = 0;
@@ -184,7 +188,9 @@ public class HelloGame extends SceneGame {
   , plat.assets().getSound("sounds/commissioner/stand")
   };
   Sound[] landSounds = new Sound[] {                      // создание и присваивание значений массиву звуков
-    plat.assets().getSound("sounds/landSounds/blip")
+    plat.assets().getSound("sounds/landSounds/blip"),
+    plat.assets().getSound("sounds/landSounds/nice"),
+    plat.assets().getSound("sounds/landSounds/neat"),
   };
 
   GroupLayer Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
@@ -373,15 +379,25 @@ public class HelloGame extends SceneGame {
           Objectlayer.addAt(layer, shipPositionX+floorw*o.x, shipPositionY+floorh*o.y);
         }
       }
-
-
+/*
+      class SortByInit implements Comparator<Unit>
+      {
+        public int compare(Unit a, Unit b) {
+        if ( a.initiative < b.initiative ) return -1;
+        else if ( a.initiative == b.initiative ) return 0;
+        else return 1;
+        }
+      }
+*/
   public class Unit {//Класс юнита
     public String name, age, role;
     public int hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres;
-    public int actionPoints;
+    public int actionPoints, initiative;
     public int posx, posy;
 
-    public Unit(String nm, String ag, String rl, int h, int en, int x, int y, int m, int hun) { //Конструктор юнита
+
+
+    public Unit(String nm, String ag, String rl, int h, int en, int x, int y, int m, int hun, int init) { //Конструктор юнита
       name = nm;
       age  = ag;
       role = rl;
@@ -396,13 +412,16 @@ public class HelloGame extends SceneGame {
       bleedres = 100;
       stunres  = 100;
 
+      initiative = init;
+
+
       actionPoints = 10;
 
       posx = x;
       posy = y;
     }
 
-    public Unit(String nm, String ag, String rl, int h, int en, int x, int y) { //Конструктор юнита, перегруз
+    public Unit(String nm, String ag, String rl, int h, int en, int x, int y, int init) { //Конструктор юнита, перегруз
       name = nm;
       age  = ag;
       role = rl;
@@ -417,10 +436,17 @@ public class HelloGame extends SceneGame {
       bleedres = 100;
       stunres  = 100;
 
+      initiative = init;
+
       actionPoints = 10;
 
       posx = x;
       posy = y;
+    }
+
+    public Unit(String nm)
+    {
+      name = nm;
     }
 
   }
@@ -443,25 +469,25 @@ public class HelloGame extends SceneGame {
         cImage = commissionerbImage;
       }
 
-      if(i==0)
+      if(squad[i].name == "PРейнор")
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
         Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
       }
-      if(i==1)
+      if(squad[i].name == "TТайкус")
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
         Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
       }
-      if(i==2)
+      if(squad[i].name == "Ray")
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
         Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
       }
-      if(i==3)
+      if(squad[i].name == "Commissioner")
       {
         final ImageLayer layer = new ImageLayer(cImage);
         layer.setOrigin(ImageLayer.Origin.UL);
@@ -504,7 +530,8 @@ public class HelloGame extends SceneGame {
     public UnitInfo(final GroupLayer UnitInfoLayer, float x, float y, Unit unt) // Коструктор 0, если выбран юнит
     {
       String hps = "hp: " + String.valueOf(unt.hp); // преобразуем число в строку
-      String points = "Action Points: " + String.valueOf(unt.actionPoints); // преобразуем число в строку
+      String points = "Action Points: " + String.valueOf(unt.actionPoints);
+      String initiative1 = "Initiative: " + String.valueOf(unt.initiative);
       String energys = "energy: " + String.valueOf(unt.energy);
       String minds = "mind: " + String.valueOf(unt.mind);
       String morales = "morale: " + String.valueOf(unt.morale);
@@ -517,6 +544,7 @@ public class HelloGame extends SceneGame {
       String names = "name: " + unt.name;
       TextLayout layoutHp = gfx.layoutText(hps, format); // получаем надпись
       TextLayout layoutPoints = gfx.layoutText(points, format); // получаем надпись
+      TextLayout layoutInitiative1 = gfx.layoutText(initiative1, format); // получаем надпись
       TextLayout layoutEnergy = gfx.layoutText(energys, format); // получаем надпись
       TextLayout layoutMind = gfx.layoutText(minds, format); // получаем надпись
       TextLayout layoutMorale = gfx.layoutText(morales, format); // получаем надпись
@@ -529,6 +557,7 @@ public class HelloGame extends SceneGame {
       TextLayout layoutNames = gfx.layoutText(names, format); // получаем надпись
       Layer layerHP = createTextLayer(layoutHp, 0xFFFF0000); // запекаем надпись в картинку
       Layer layerPoints = createTextLayer(layoutPoints, 0xFFA9A9A9); // запекаем надпись в картинку
+      Layer layerInitiative = createTextLayer(layoutInitiative1, 0xFF6A5ACD); // запекаем надпись в картинку
       Layer layerEnergy = createTextLayer(layoutEnergy, 0xFFAFEEEE); // запекаем надпись в картинку
       Layer layerMind = createTextLayer(layoutMind, 0xFF000000); // запекаем надпись в картинку
       Layer layerMorale = createTextLayer(layoutMorale, 0xFF0000FF); // запекаем надпись в картинку
@@ -574,6 +603,7 @@ public class HelloGame extends SceneGame {
       UnitInfoLayer.addAt(layerStunres, x+410+100, y+30+15+24+24+24);
       UnitInfoLayer.addAt(layerNames, x+410+100, y+30+15+24+24+24+24);
       UnitInfoLayer.addAt(layerPoints, x+410+100, y+30+15+24+24+24+24+24);
+      UnitInfoLayer.addAt(layerInitiative, x+610+100, y+30+15);
 
     }
   }
@@ -588,11 +618,63 @@ public class HelloGame extends SceneGame {
   public HelloGame(Platform plat) {
     super(plat, 25); // 25 millis per frame = ~40fps
 
-    Unit tychus = new Unit("Тайкус","40","Танк",200,100, 19, 5, 142, 242); //Создаем Тайкуса в c координатами 3 5
-    Unit raynor = new Unit("Рейнор","40","ДД",150,150, 20, 7, 422, 144); //Создаем Рейнора с координатами 0 2
-    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 20, 6, 11, 42); //Создаем Рейнора с координатами 0 2
-    Unit commissioner = new Unit("Сommissioner","40","Сommissioner",125 ,125, 22, 7); //Создаем Рейнора с координатами 0 2
+    Unit tychus = new Unit("TТайкус","40","Танк",200,100, 19, 5, 142, 242, 5); //Создаем Тайкуса в c координатами 3 5
+    Unit raynor = new Unit("PРейнор","40","ДД",150,150, 20, 7, 422, 144, 14); //Создаем Рейнора с координатами 0 2
+    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 20, 6, 11, 42, 7); //Создаем Рейнора с координатами 0 2
+    Unit commissioner = new Unit("Commissioner","40","Commissioner",125 ,125, 22, 7, 10); //Создаем Рейнора с координатами 0 2
+    Unit hollow = new Unit("Hollow"); //Создаем Рейнора с координатами 0 2
 
+    squad[0] = tychus; // Добавляем Тайкуса в отряд
+    squad[1] = raynor; // Добавляем Рейнора в отряд
+    squad[2] = ray; // Добавляем Рейнора в отряд
+    squad[3] = commissioner; // Добавляем Рейнора в отряд
+    squad[4] = hollow; // Добавляем Рейнора в отряд
+
+/*
+    for(int i=0; i<squadLimit;i++){
+      System.out.printf("Name: %s, init: %d \n", squad[i].name, squad[i].initiative);
+    }
+    Arrays.sort(squad, new SortByInit());
+    for(int i=0; i<squadLimit;i++){
+      System.out.printf("Name: %s, init: %d \n", squad[i].name, squad[i].initiative);
+    }
+*/
+
+
+    int maxincount = 0;
+    int bestpos = 0;
+    System.out.printf("LOX1 \n");
+
+    while(maxincount <= (squadLimit-1))
+    {
+      System.out.printf("LOX2 \n");
+      System.out.printf("!                   !\n");
+      System.out.printf("-------------------\n");
+      for(int i=maxincount; i < squadLimit; i++)
+        {
+
+          if(maxin <= squad[i].initiative)
+          {
+            maxin = squad[i].initiative;
+            bestpos = i;
+            System.out.printf("LOX \n");
+            System.out.printf("bestpos = %d \n",bestpos);
+            System.out.printf("bestpos = %d \n",i);
+            System.out.printf("-------------------\n");
+          }
+          //maxin = -10;
+        }
+      squad[4] = squad[maxincount];
+      squad[maxincount] = squad[bestpos];
+      squad[bestpos] = squad[4];
+      maxincount++;
+
+    }
+    for(int i=0; i < squadLimit;i++)
+    {
+      System.out.printf("Name: %s \n", squad[i].name);
+      System.out.printf("Name: %d \n", i);
+    }
 
     Object hullblock = new Object("Стена","Обшивка", 100, 5, 5, "hull", false);
     Object dooropen = new Object("Стена","Обшивка", 100, -100, -100, "dooropen", true);
@@ -600,10 +682,6 @@ public class HelloGame extends SceneGame {
 
     objectArr[0] = hullblock;
 
-    squad[0] = tychus; // Добавляем Тайкуса в отряд
-    squad[1] = raynor; // Добавляем Рейнора в отряд
-    squad[2] = ray; // Добавляем Рейнора в отряд
-    squad[3] = commissioner; // Добавляем Рейнора в отряд
 
 
     objectLimit = 0;
@@ -812,11 +890,17 @@ public class HelloGame extends SceneGame {
                }
              }
              if (nowall){
-               if(squad[selectedUnit].actionPoints > 0)
+               if((squad[selectedUnit].actionPoints > 0) && (squad[selectedUnit].initiative == turnfirst[muving].initiative))
                {
                  squad[selectedUnit].posy = squad[selectedUnit].posy -1;
                  selectedUnity--;
                  squad[selectedUnit].actionPoints--;
+               }
+               else
+               {
+                 landSounds[1].setVolume(1.1f);
+                 landSounds[1].play();
+                 muving++;
                }
              }
            };
@@ -840,6 +924,11 @@ public class HelloGame extends SceneGame {
                squad[selectedUnit].actionPoints--;
 
                }
+               else
+               {
+                 landSounds[1].setVolume(1.1f);
+                 landSounds[1].play();
+               }
              }
            };
            break;
@@ -861,6 +950,11 @@ public class HelloGame extends SceneGame {
                selectedUnity--;
                squad[selectedUnit].actionPoints--;
 
+               }
+               else
+               {
+                 landSounds[1].setVolume(1.1f);
+                 landSounds[1].play();
                }
              }
            };
@@ -884,6 +978,11 @@ public class HelloGame extends SceneGame {
                  squad[selectedUnit].actionPoints--;
 
                  }
+                 else
+                 {
+                   landSounds[1].setVolume(1.1f);
+                   landSounds[1].play();
+                 }
                }
            };
            break;
@@ -896,8 +995,9 @@ public class HelloGame extends SceneGame {
                 if ((objectArr[i].x >= squad[selectedUnit].posx-1) && (objectArr[i].x <= squad[selectedUnit].posx+1) && (objectArr[i].y >= squad[selectedUnit].posy-1) && (objectArr[i].y <= squad[selectedUnit].posy+1))
                 {
                   if(squad[selectedUnit].actionPoints <= 0){
+                    landSounds[1].setVolume(1.1f);
+                    landSounds[1].play();
                     break;
-
                   }
                   else{
                   switch(objectArr[i].type){
