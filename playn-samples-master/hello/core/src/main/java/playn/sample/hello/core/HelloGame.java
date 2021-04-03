@@ -221,6 +221,7 @@ public class HelloGame extends SceneGame {
     {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF}
   };
 
+
   SpaceShip startShip = new SpaceShip("Победоносный", startShipForm);
 
   public final void redraw(){
@@ -503,6 +504,7 @@ public class HelloGame extends SceneGame {
     public UnitInfo(final GroupLayer UnitInfoLayer, float x, float y, Unit unt) // Коструктор 0, если выбран юнит
     {
       String hps = "hp: " + String.valueOf(unt.hp); // преобразуем число в строку
+      String points = "Action Points: " + String.valueOf(unt.actionPoints); // преобразуем число в строку
       String energys = "energy: " + String.valueOf(unt.energy);
       String minds = "mind: " + String.valueOf(unt.mind);
       String morales = "morale: " + String.valueOf(unt.morale);
@@ -514,6 +516,7 @@ public class HelloGame extends SceneGame {
       String stunress = "stunres: " + String.valueOf(unt.stunres);
       String names = "name: " + unt.name;
       TextLayout layoutHp = gfx.layoutText(hps, format); // получаем надпись
+      TextLayout layoutPoints = gfx.layoutText(points, format); // получаем надпись
       TextLayout layoutEnergy = gfx.layoutText(energys, format); // получаем надпись
       TextLayout layoutMind = gfx.layoutText(minds, format); // получаем надпись
       TextLayout layoutMorale = gfx.layoutText(morales, format); // получаем надпись
@@ -525,6 +528,7 @@ public class HelloGame extends SceneGame {
       TextLayout layoutStunres = gfx.layoutText(stunress, format); // получаем надпись
       TextLayout layoutNames = gfx.layoutText(names, format); // получаем надпись
       Layer layerHP = createTextLayer(layoutHp, 0xFFFF0000); // запекаем надпись в картинку
+      Layer layerPoints = createTextLayer(layoutPoints, 0xFFA9A9A9); // запекаем надпись в картинку
       Layer layerEnergy = createTextLayer(layoutEnergy, 0xFFAFEEEE); // запекаем надпись в картинку
       Layer layerMind = createTextLayer(layoutMind, 0xFF000000); // запекаем надпись в картинку
       Layer layerMorale = createTextLayer(layoutMorale, 0xFF0000FF); // запекаем надпись в картинку
@@ -569,6 +573,7 @@ public class HelloGame extends SceneGame {
       UnitInfoLayer.addAt(layerBleedres, x+410+100, y+30+15+24+24);
       UnitInfoLayer.addAt(layerStunres, x+410+100, y+30+15+24+24+24);
       UnitInfoLayer.addAt(layerNames, x+410+100, y+30+15+24+24+24+24);
+      UnitInfoLayer.addAt(layerPoints, x+410+100, y+30+15+24+24+24+24+24);
 
     }
   }
@@ -807,8 +812,12 @@ public class HelloGame extends SceneGame {
                }
              }
              if (nowall){
-               squad[selectedUnit].posy = squad[selectedUnit].posy -1;
-               selectedUnity--;
+               if(squad[selectedUnit].actionPoints > 0)
+               {
+                 squad[selectedUnit].posy = squad[selectedUnit].posy -1;
+                 selectedUnity--;
+                 squad[selectedUnit].actionPoints--;
+               }
              }
            };
            break;
@@ -825,8 +834,12 @@ public class HelloGame extends SceneGame {
                }
              }
              if (nowall){
+               if(squad[selectedUnit].actionPoints > 0){
                squad[selectedUnit].posy = squad[selectedUnit].posy +1;
                selectedUnity--;
+               squad[selectedUnit].actionPoints--;
+
+               }
              }
            };
            break;
@@ -843,8 +856,12 @@ public class HelloGame extends SceneGame {
                }
              }
              if (nowall){
+               if(squad[selectedUnit].actionPoints > 0){
                squad[selectedUnit].posx = squad[selectedUnit].posx -1;
                selectedUnity--;
+               squad[selectedUnit].actionPoints--;
+
+               }
              }
            };
            break;
@@ -861,8 +878,12 @@ public class HelloGame extends SceneGame {
                  }
                }
                if (nowall){
+                 if(squad[selectedUnit].actionPoints > 0){
                  squad[selectedUnit].posx = squad[selectedUnit].posx +1;
                  selectedUnity--;
+                 squad[selectedUnit].actionPoints--;
+
+                 }
                }
            };
            break;
@@ -874,32 +895,42 @@ public class HelloGame extends SceneGame {
               for(int i=0; i<objectLimit; i++){
                 if ((objectArr[i].x >= squad[selectedUnit].posx-1) && (objectArr[i].x <= squad[selectedUnit].posx+1) && (objectArr[i].y >= squad[selectedUnit].posy-1) && (objectArr[i].y <= squad[selectedUnit].posy+1))
                 {
+                  if(squad[selectedUnit].actionPoints <= 0){
+                    break;
+
+                  }
+                  else{
                   switch(objectArr[i].type){
                     case "doorclosed":{
                       objectArr[i].type = "dooropen";
                       objectArr[i].passability = true;
                       landSounds[0].play();
+                      squad[selectedUnit].actionPoints--;
                       break;
                     }
                     case "dooropen":{
                       objectArr[i].type = "doorclosed";
                        objectArr[i].passability = false;
                        landSounds[0].play();
+                       squad[selectedUnit].actionPoints--;
                        break;
                     }
                     case "hullC":{
                       objectArr[i].type = "hullO";
                        objectArr[i].passability = true;
                        landSounds[0].play();
+                       squad[selectedUnit].actionPoints--;
                        break;
                     }
                     case "hullO":{
                       objectArr[i].type = "hullC";
                        objectArr[i].passability = false;
                        landSounds[0].play();
+                       squad[selectedUnit].actionPoints--;
                        break;
                     }
                   }
+                }
                 }
 
               }
