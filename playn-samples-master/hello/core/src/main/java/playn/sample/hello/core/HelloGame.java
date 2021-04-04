@@ -92,7 +92,7 @@ public class HelloGame extends SceneGame {
   float cameraX = 0;
   float cameraY = 0;
 
-  int actionPointsDef = 0;
+  int actionPointsDef = 10;
 
   int shipPositionX = 0;
   int shipPositionY = 0;
@@ -646,6 +646,7 @@ public class HelloGame extends SceneGame {
     int maxincount = 0;
     int bestpos = 0;
     System.out.printf("LOX1 \n");
+    System.out.printf("TOP %d\n",top);
 
     while(maxincount <= (squadLimit-1))
     {
@@ -883,7 +884,7 @@ public class HelloGame extends SceneGame {
           }
 
           case SPACE: {
-           if(top == 4)
+           if(top == squadLimit)
            {
              for(int i = 0; i < squadLimit; i++)
              {
@@ -915,7 +916,11 @@ public class HelloGame extends SceneGame {
                {
                  landSounds[1].setVolume(1.1f);
                  landSounds[1].play();
-                 top++;
+                 if(selectedUnit == top)
+                 {
+                   top++;
+                   System.out.printf("TOP %d\n",top);
+                 }
                }
              }
            };
@@ -944,7 +949,11 @@ public class HelloGame extends SceneGame {
                {
                  landSounds[1].setVolume(1.1f);
                  landSounds[1].play();
-                 top++;
+                 if(selectedUnit == top)
+                 {
+                   top++;
+                   System.out.printf("TOP %d\n",top);
+                 }
                }
              }
            };
@@ -972,7 +981,11 @@ public class HelloGame extends SceneGame {
                {
                  landSounds[1].setVolume(1.1f);
                  landSounds[1].play();
-                 top++;
+                 if(selectedUnit == top)
+                 {
+                   top++;
+                   System.out.printf("TOP %d\n",top);
+                 }
                }
              }
            };
@@ -1001,7 +1014,18 @@ public class HelloGame extends SceneGame {
                  {
                    landSounds[1].setVolume(1.1f);
                    landSounds[1].play();
-                   top++;
+
+                   if(selectedUnit == top)
+                   {
+                     top++;
+                     System.out.printf("TOP %d\n",top);
+                   }
+                   /*
+                   if((selectedUnit == squadLimit) && (selectedUnit < top))
+                   {
+                     top = 0;
+                   }
+                   */
                  }
                }
            };
