@@ -890,6 +890,7 @@ public class HelloGame extends SceneGame {
              {
                squad[i].actionPoints = actionPointsDef;
              }
+             top = 0;
            }
            break;
 
@@ -1114,7 +1115,7 @@ public class HelloGame extends SceneGame {
               selectedUnity=shipPositionY+squad[i].posy*floorh;
 
 
-              if (i == 3){
+              if (squad[selectedUnit].name=="Commissioner"){
                     if (soundCoolDown3 <= 0){
                       commissionerSounds[soundCounter3].setVolume(0.05f);
                       commissionerSounds[soundCounter3].play();    //воспроизведение звуков
@@ -1126,7 +1127,7 @@ public class HelloGame extends SceneGame {
 
 
 
-              if (i == 2){
+              if (squad[selectedUnit].name=="Ray"){
                     if (soundCoolDown2 <= 0){
                       marineSounds[soundCounter2].play();    //воспроизведение звуков
                       soundCounter2++;     //счетчик реплик
