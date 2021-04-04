@@ -40,6 +40,7 @@ import playn.core.Sound;
 
 import playn.core.Mouse;
 import playn.core.Mouse.ButtonEvent;
+import playn.core.Mouse.ButtonEvent.Id;
 import playn.core.Mouse.MotionEvent;
 
 import playn.core.Tile;
@@ -51,6 +52,7 @@ import java.util.List;
 import java.util.Comparator;
 import react.UnitSlot;
 import static java.lang.Math.max;
+import static java.lang.Math.floor;
 import pythagoras.f.IDimension;
 
 
@@ -229,8 +231,19 @@ public class HelloGame extends SceneGame {
     {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF}
   };
 
+  ShipFloor[][] boxShipForm = new ShipFloor[][]{
+    {sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb},
+    {sWalFb, sFloor, sFloor, sFloor, sWalFb, sFloor, sFloor, sFloor, sWalFb},
+    {sFloor, sFloor, sFloor, sFloor, sWalFb, sFloor, sFloor, sFloor, sWalFb},
+    {sWalFb, sFloor, sFloor, sFloor, sWalFb, sFloor, sFloor, sFloor, sWalFb},
+    {sWalFb, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sWalFb},
+    {sWalFb, sFloor, sFloor, sFloor, sWalFb, sFloor, sFloor, sFloor, sWalFb},
+    {sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb},
+  };
+
 
   SpaceShip startShip = new SpaceShip("Победоносный", startShipForm);
+  SpaceShip testship = new SpaceShip("Test", boxShipForm);
 
   public final void redraw(){
     rootLayer.disposeAll(); //Чистим все слои, принадлежащие корневому слою.
@@ -246,7 +259,7 @@ public class HelloGame extends SceneGame {
 
     // ----------Starship
     rootLayer.add(Floorlayer);
-    new SpaceShipView(Floorlayer,startShip);
+    new SpaceShipView(Floorlayer,testship);
 
     // ----------Objects
     Objectlayer = new GroupLayer();
@@ -620,7 +633,7 @@ public class HelloGame extends SceneGame {
   public HelloGame(Platform plat) {
     super(plat, 25); // 25 millis per frame = ~40fps
 
-    Unit tychus = new Unit("TТайкус","40","Танк",200,100, 19, 5, 142, 242, 5); //Создаем Тайкуса в c координатами 3 5
+    Unit tychus = new Unit("TТайкус","40","Танк",200,100, 6, 1, 142, 242, 20); //Создаем Тайкуса в c координатами 3 5
     Unit raynor = new Unit("PРейнор","40","ДД",150,150, 20, 7, 422, 144, 14); //Создаем Рейнора с координатами 0 2
     Unit ray = new Unit("Ray","40","Medic", 75 ,75, 20, 6, 11, 42, 7); //Создаем Рейнора с координатами 0 2
     Unit commissioner = new Unit("Commissioner","40","Commissioner",125 ,125, 22, 7, 10); //Создаем Рейнора с координатами 0 2
@@ -688,17 +701,17 @@ public class HelloGame extends SceneGame {
 
 
     objectLimit = 0;
-    for(int i = 0; i < startShip.floorArray.length; i++){
-      for(int j = 0; j < startShip.floorArray[0].length; j++){
-        if (startShip.floorArray[i][j].type == "sWFb"){
+    for(int i = 0; i < testship.floorArray.length; i++){
+      for(int j = 0; j < testship.floorArray[0].length; j++){
+        if (testship.floorArray[i][j].type == "sWFb"){
           objectArr[objectLimit] = new Object("Стена","Обшивка", 100, j, i, "hull", false);
           objectLimit++;
         }
-        if ((startShip.floorArray[i][j].type == "sFUP") || (startShip.floorArray[i][j].type == "sFGOR")){
+        if ((testship.floorArray[i][j].type == "sFUP") || (testship.floorArray[i][j].type == "sFGOR")){
           objectArr[objectLimit] = new Object("Дверь","Проход", 100, j, i, "doorclosed", false);
           objectLimit++;
         }
-        if (startShip.floorArray[i][j].type == "emptyb"){
+        if (testship.floorArray[i][j].type == "emptyb"){
           objectArr[objectLimit] = new Object("Шлюз","Проход", 100, j, i, "hullC", false);
           objectLimit++;
         }
@@ -802,6 +815,44 @@ public class HelloGame extends SceneGame {
 
 
 
+//------------------------------------------------------------- CLICK!!!!----
+      plat.input().mouseEvents.connect(new Mouse.ButtonSlot() {
+        public void onEmit (Mouse.ButtonEvent event)
+        {
+          if(event.down){
+            if(selectedUnit!=(-1))
+              {
+                if(event.button == Mouse.ButtonEvent.Id.RIGHT)
+                {
+                  int obposx = (int) ((event.x() - shipPositionX) / floorw);
+                  int obposy = (int) ((event.y() - shipPositionY) / floorh);
+                  boolean nowall = false;
+                  boolean noobj = true;
+                  for (int i = 0; i < objectLimit; i++){
+                    if ((event.x() >= shipPositionX+objectArr[i].x*floorw) && (event.x() <= shipPositionX+(objectArr[i].x+1)*floorw) && (event.y() >= shipPositionY+objectArr[i].y*floorh) && (event.y() <= shipPositionY+(objectArr[i].y+1)*floorh))
+                    {
+                      nowall = objectArr[i].passability;
+                      noobj=false;
+
+                      break;
+                    }
+
+                  }
+                  if(noobj || (nowall && !noobj)){
+                  System.out.printf("!---------------------------------!\n");
+                  System.out.printf("obposx %d\n",obposx);
+                  System.out.printf("obposy %d\n",obposy);
+                  squad[selectedUnit].posx = obposx;
+                  squad[selectedUnit].posy = obposy;
+                  commissionerSounds[2].play();    //воспроизведение звуков
+                  }
+              }
+          }
+        }
+        };
+      });
+//-------------------------------------------------------------
+
     plat.input().mouseEvents.connect(new Mouse.MotionSlot() {
       public void onEmit (Mouse.MotionEvent event) {
         if((event.x() < 15) && (event.y() < 15))
@@ -882,18 +933,24 @@ public class HelloGame extends SceneGame {
            else{movingWay = "none";}
            break;
           }
-
+          /*
           case SPACE: {
            if(top == squadLimit)
            {
              for(int i = 0; i < squadLimit; i++)
              {
-               squad[i].actionPoints = actionPointsDef;
+               squad[0].actionPoints = actionPointsDef;
              }
              top = 0;
            }
            break;
 
+          }
+          */
+          case SPACE:
+          {
+           squad[0].actionPoints = actionPointsDef;
+           break;
           }
 
           case W: {
@@ -1142,8 +1199,8 @@ public class HelloGame extends SceneGame {
             }
           };
           if ((selectedUnit== -1) &&
-              (event.x() <=shipPositionX+startShip.floorArray.length*floorw ) &&
-              (event.y() <=shipPositionY+startShip.floorArray[0].length*floorh) &&
+              (event.x() <=shipPositionX+testship.floorArray.length*floorw ) &&
+              (event.y() <=shipPositionY+testship.floorArray[0].length*floorh) &&
               (event.x() >= shipPositionX) &&
               (event.y() >= shipPositionY)
               ){
