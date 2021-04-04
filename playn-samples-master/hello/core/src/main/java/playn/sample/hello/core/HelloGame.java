@@ -87,10 +87,12 @@ public class HelloGame extends SceneGame {
   int selectedTimeCD = 20;
   int selectedTimeI = 1;
   int maxin = -10;
-  int muving = 0;
+  int top = 0;
 
   float cameraX = 0;
   float cameraY = 0;
+
+  int actionPointsDef = 0;
 
   int shipPositionX = 0;
   int shipPositionY = 0;
@@ -650,7 +652,7 @@ public class HelloGame extends SceneGame {
       System.out.printf("LOX2 \n");
       System.out.printf("!                   !\n");
       System.out.printf("-------------------\n");
-      for(int i=maxincount; i < squadLimit; i++)
+      for(int i = maxincount; i <= (squadLimit); i++)
         {
 
           if(maxin <= squad[i].initiative)
@@ -662,8 +664,8 @@ public class HelloGame extends SceneGame {
             System.out.printf("bestpos = %d \n",i);
             System.out.printf("-------------------\n");
           }
-          //maxin = -10;
         }
+      maxin = -10;
       squad[4] = squad[maxincount];
       squad[maxincount] = squad[bestpos];
       squad[bestpos] = squad[4];
@@ -879,6 +881,19 @@ public class HelloGame extends SceneGame {
            else{movingWay = "none";}
            break;
           }
+
+          case SPACE: {
+           if(top == 4)
+           {
+             for(int i = 0; i < squadLimit; i++)
+             {
+               squad[i].actionPoints = actionPointsDef;
+             }
+           }
+           break;
+
+          }
+
           case W: {
            wDown = ev.down;
            if(wDown){
@@ -890,7 +905,7 @@ public class HelloGame extends SceneGame {
                }
              }
              if (nowall){
-               if((squad[selectedUnit].actionPoints > 0) && (squad[selectedUnit].initiative == turnfirst[muving].initiative))
+               if((squad[selectedUnit].actionPoints > 0) && (squad[selectedUnit].initiative == squad[top].initiative))
                {
                  squad[selectedUnit].posy = squad[selectedUnit].posy -1;
                  selectedUnity--;
@@ -900,7 +915,7 @@ public class HelloGame extends SceneGame {
                {
                  landSounds[1].setVolume(1.1f);
                  landSounds[1].play();
-                 muving++;
+                 top++;
                }
              }
            };
@@ -918,7 +933,8 @@ public class HelloGame extends SceneGame {
                }
              }
              if (nowall){
-               if(squad[selectedUnit].actionPoints > 0){
+               if((squad[selectedUnit].actionPoints > 0) && (squad[selectedUnit].initiative == squad[top].initiative))
+               {
                squad[selectedUnit].posy = squad[selectedUnit].posy +1;
                selectedUnity--;
                squad[selectedUnit].actionPoints--;
@@ -928,6 +944,7 @@ public class HelloGame extends SceneGame {
                {
                  landSounds[1].setVolume(1.1f);
                  landSounds[1].play();
+                 top++;
                }
              }
            };
@@ -945,16 +962,17 @@ public class HelloGame extends SceneGame {
                }
              }
              if (nowall){
-               if(squad[selectedUnit].actionPoints > 0){
+               if((squad[selectedUnit].actionPoints > 0) && (squad[selectedUnit].initiative == squad[top].initiative))
+               {
                squad[selectedUnit].posx = squad[selectedUnit].posx -1;
                selectedUnity--;
                squad[selectedUnit].actionPoints--;
-
                }
                else
                {
                  landSounds[1].setVolume(1.1f);
                  landSounds[1].play();
+                 top++;
                }
              }
            };
@@ -972,7 +990,8 @@ public class HelloGame extends SceneGame {
                  }
                }
                if (nowall){
-                 if(squad[selectedUnit].actionPoints > 0){
+                 if((squad[selectedUnit].actionPoints > 0) && (squad[selectedUnit].initiative == squad[top].initiative))
+                 {
                  squad[selectedUnit].posx = squad[selectedUnit].posx +1;
                  selectedUnity--;
                  squad[selectedUnit].actionPoints--;
@@ -982,6 +1001,7 @@ public class HelloGame extends SceneGame {
                  {
                    landSounds[1].setVolume(1.1f);
                    landSounds[1].play();
+                   top++;
                  }
                }
            };
