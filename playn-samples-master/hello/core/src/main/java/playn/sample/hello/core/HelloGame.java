@@ -57,26 +57,24 @@ import pythagoras.f.IDimension;
 
 
 public class HelloGame extends SceneGame {
+  World w = new World();
 
   Unit[] squad = new Unit[10]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
   Object[] objectArr = new Object[24*12];
   int squadLimit = 4; // Текущий предел отряда
-  int objectLimit = 0; // Текущий предел отряда
   Unit turnfirst[] = new Unit[squadLimit]; //Создаем массив юнитов. Наш отряд. Максимальный объем - 10 юнитов.
 
   IDimension size = plat.graphics().screenSize();
 
 
   int selectedUnit = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
-  int selectedUnitx = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
-  int selectedUnity = -1; // если не выбран никакой, то -1. Номер выбранного на данный момент юнита(все в мас)
 
   int masx = 10;
   int masy = 10;
   int ii = 0;
   int jj = 0;
-  int floorw = 128;
-  int floorh = 128;
+//  int w.floorw = 128;
+//  int w.floorh = 128;
   int hudx = 0;
   int hudy = (1080-255);
   int soundCounter2 = 0;
@@ -264,7 +262,7 @@ public class HelloGame extends SceneGame {
     // ----------Objects
     Objectlayer = new GroupLayer();
     rootLayer.add(Objectlayer);
-    for (int i=0; i<objectLimit; i++){
+    for (int i=0; i<w.objectLimit; i++){
       new ObjectView(Objectlayer, objectArr[i]);
     }
 
@@ -295,21 +293,6 @@ public class HelloGame extends SceneGame {
       }
     };
   };
-
-  public class Object {
-    public String name, description, type;
-    public int hp, x, y;
-    public boolean passability;
-    Object (String n, String d, int h, int xx, int yy, String t, boolean p){
-      name = n;
-      description = d;
-      hp = h;
-      type = t;
-      x = xx;
-      y = yy;
-      passability = p;
-    }
-  }
 
   public class ShipFloor {
     public String name, description, type;
@@ -347,7 +330,7 @@ public class HelloGame extends SceneGame {
       if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 9)) {image = selection9;};
       final ImageLayer layer = new ImageLayer(image);
       layer.setOrigin(ImageLayer.Origin.UL);
-      SelectionLayer.addAt(layer, shipPositionX+squad[selectedUnit].posx*floorw, shipPositionY+squad[selectedUnit].posy*floorh);
+      SelectionLayer.addAt(layer, shipPositionX+squad[selectedUnit].posx*w.floorw, shipPositionY+squad[selectedUnit].posy*w.floorh);
     }
   }
 
@@ -372,7 +355,7 @@ public class HelloGame extends SceneGame {
           }
           final ImageLayer layer = new ImageLayer(image);
           layer.setOrigin(ImageLayer.Origin.UL);
-          Floorlayer.addAt(layer, shipPositionX+floorw*j, shipPositionY+floorh*i);
+          Floorlayer.addAt(layer, shipPositionX+w.floorw*j, shipPositionY+w.floorh*i);
         }
       }
     }
@@ -391,7 +374,7 @@ public class HelloGame extends SceneGame {
           }
           final ImageLayer layer = new ImageLayer(image);
           layer.setOrigin(ImageLayer.Origin.UL);
-          Objectlayer.addAt(layer, shipPositionX+floorw*o.x, shipPositionY+floorh*o.y);
+          Objectlayer.addAt(layer, shipPositionX+w.floorw*o.x, shipPositionY+w.floorh*o.y);
         }
       }
 /*
@@ -404,67 +387,6 @@ public class HelloGame extends SceneGame {
         }
       }
 */
-  public class Unit {//Класс юнита
-    public String name, age, role;
-    public int hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres;
-    public int actionPoints, initiative;
-    public int posx, posy;
-
-
-
-    public Unit(String nm, String ag, String rl, int h, int en, int x, int y, int m, int hun, int init) { //Конструктор юнита
-      name = nm;
-      age  = ag;
-      role = rl;
-      hp   = h;
-      energy = en;
-      mind = 100;
-      morale = m;
-      hunger = hun;
-      thirst = 100;
-      fireres  = 100;
-      electres = 100;
-      bleedres = 100;
-      stunres  = 100;
-
-      initiative = init;
-
-
-      actionPoints = 10;
-
-      posx = x;
-      posy = y;
-    }
-
-    public Unit(String nm, String ag, String rl, int h, int en, int x, int y, int init) { //Конструктор юнита, перегруз
-      name = nm;
-      age  = ag;
-      role = rl;
-      hp   = h;
-      energy = en;
-      mind = 100;
-      morale = 100;
-      hunger = 100;
-      thirst = 100;
-      fireres  = 100;
-      electres = 100;
-      bleedres = 100;
-      stunres  = 100;
-
-      initiative = init;
-
-      actionPoints = 10;
-
-      posx = x;
-      posy = y;
-    }
-
-    public Unit(String nm)
-    {
-      name = nm;
-    }
-
-  }
 
 
 
@@ -488,25 +410,25 @@ public class HelloGame extends SceneGame {
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
+        Squadlayer.addAt(layer, shipPositionX+unt.posx*w.floorw, shipPositionY+unt.posy*w.floorh);
       }
       if(squad[i].name == "TТайкус")
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
+        Squadlayer.addAt(layer, shipPositionX+unt.posx*w.floorw, shipPositionY+unt.posy*w.floorh);
       }
       if(squad[i].name == "Ray")
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
+        Squadlayer.addAt(layer, shipPositionX+unt.posx*w.floorw, shipPositionY+unt.posy*w.floorh);
       }
       if(squad[i].name == "Commissioner")
       {
         final ImageLayer layer = new ImageLayer(cImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, shipPositionX+unt.posx*floorw, shipPositionY+unt.posy*floorh);
+        Squadlayer.addAt(layer, shipPositionX+unt.posx*w.floorw, shipPositionY+unt.posy*w.floorh);
       }
 
       //final ImageLayer layer = new ImageLayer(marineImage);
@@ -700,20 +622,20 @@ public class HelloGame extends SceneGame {
 
 
 
-    objectLimit = 0;
+    w.objectLimit = 0;
     for(int i = 0; i < testship.floorArray.length; i++){
       for(int j = 0; j < testship.floorArray[0].length; j++){
         if (testship.floorArray[i][j].type == "sWFb"){
-          objectArr[objectLimit] = new Object("Стена","Обшивка", 100, j, i, "hull", false);
-          objectLimit++;
+          objectArr[w.objectLimit] = new Object("Стена","Обшивка", 100, j, i, "hull", false);
+          w.objectLimit++;
         }
         if ((testship.floorArray[i][j].type == "sFUP") || (testship.floorArray[i][j].type == "sFGOR")){
-          objectArr[objectLimit] = new Object("Дверь","Проход", 100, j, i, "doorclosed", false);
-          objectLimit++;
+          objectArr[w.objectLimit] = new Object("Дверь","Проход", 100, j, i, "doorclosed", false);
+          w.objectLimit++;
         }
         if (testship.floorArray[i][j].type == "emptyb"){
-          objectArr[objectLimit] = new Object("Шлюз","Проход", 100, j, i, "hullC", false);
-          objectLimit++;
+          objectArr[w.objectLimit] = new Object("Шлюз","Проход", 100, j, i, "hullC", false);
+          w.objectLimit++;
         }
       }
     }
@@ -816,80 +738,26 @@ public class HelloGame extends SceneGame {
 
 
 //------------------------------------------------------------- CLICK!!!!----
-      plat.input().mouseEvents.connect(new Mouse.ButtonSlot() {
-        public void onEmit (Mouse.ButtonEvent event)
+    plat.input().mouseEvents.connect(new Mouse.ButtonSlot() {
+      public void onEmit (Mouse.ButtonEvent event)
+      {
+        if(event.down)
         {
-          if(event.down){
-            if(selectedUnit!=(-1))
-              {
-                if(event.button == Mouse.ButtonEvent.Id.RIGHT)
-                {
-                  int obposx = (int) ((event.x() - shipPositionX) / floorw);
-                  int obposy = (int) ((event.y() - shipPositionY) / floorh);
-                  boolean nowall = false;
-                  boolean noobj = true;
-                  for (int i = 0; i < objectLimit; i++){
-                    if ((event.x() >= shipPositionX+objectArr[i].x*floorw) && (event.x() <= shipPositionX+(objectArr[i].x+1)*floorw) && (event.y() >= shipPositionY+objectArr[i].y*floorh) && (event.y() <= shipPositionY+(objectArr[i].y+1)*floorh))
-                    {
-                      nowall = objectArr[i].passability;
-                      noobj=false;
-
-                      break;
-                    }
-
-                  }
-                  if(noobj || (nowall && !noobj)){
-                  System.out.printf("!---------------------------------!\n");
-                  System.out.printf("obposx %d\n",obposx);
-                  System.out.printf("obposy %d\n",obposy);
-                  squad[selectedUnit].posx = obposx;
-                  squad[selectedUnit].posy = obposy;
-                  commissionerSounds[2].play();    //воспроизведение звуков
-                  }
-              }
+          if(selectedUnit!=(-1))
+          {
+            if(event.button == Mouse.ButtonEvent.Id.RIGHT)
+            {
+              OurMouse.movingClickMouse(objectArr,event ,squad[selectedUnit],commissionerSounds, w);
+            }
           }
         }
-        };
-      });
+      };
+    });
 //-------------------------------------------------------------
 
     plat.input().mouseEvents.connect(new Mouse.MotionSlot() {
       public void onEmit (Mouse.MotionEvent event) {
-        if((event.x() < 15) && (event.y() < 15))
-        {
-          movingWay = "LeftUp";
-        }else{
-          if((event.x() > (size.width()-15) ) && (event.y() < 15 )){
-            movingWay = "RightUp";
-          }else{
-            if((event.x() < 15) && (event.y() > (size.height()-15) )){
-              movingWay = "LeftDown";
-            }else{
-              if((event.x() > (size.width()-15)) && (event.y() > (size.height()-15) )){
-                movingWay = "RightDown";
-              }else{
-                if(event.x() < 15){
-                  movingWay = "Left";
-                }else{
-                  if(event.x() > (size.width()-15)){
-                    movingWay = "Right";
-                  }else{
-                    if(event.y() < 15){
-                      movingWay = "Up";
-                    }else{
-                      if(event.y() > (size.height()-15)){
-                        movingWay = "Down";
-                      }else{
-                        movingWay = "None";
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-
+        movingWay = OurMouse.movingWayMouse(event, size);
       };
     });
 
@@ -957,7 +825,7 @@ public class HelloGame extends SceneGame {
            wDown = ev.down;
            if(wDown){
              boolean nowall = true;
-             for (int i = 0; i < objectLimit; i++){
+             for (int i = 0; i < w.objectLimit; i++){
                if ((objectArr[i].x == squad[selectedUnit].posx) && (objectArr[i].y == (squad[selectedUnit].posy-1))){
                  nowall = objectArr[i].passability;
                  break;
@@ -967,7 +835,6 @@ public class HelloGame extends SceneGame {
                if((squad[selectedUnit].actionPoints > 0) && (squad[selectedUnit].initiative == squad[top].initiative))
                {
                  squad[selectedUnit].posy = squad[selectedUnit].posy -1;
-                 selectedUnity--;
                  squad[selectedUnit].actionPoints--;
                }
                else
@@ -989,7 +856,7 @@ public class HelloGame extends SceneGame {
            sDown = ev.down;
            if(sDown){
              boolean nowall = true;
-             for (int i = 0; i < objectLimit; i++){
+             for (int i = 0; i < w.objectLimit; i++){
                if ((objectArr[i].x == squad[selectedUnit].posx) && (objectArr[i].y == (squad[selectedUnit].posy+1))){
                  nowall = objectArr[i].passability;
                  break;
@@ -999,9 +866,7 @@ public class HelloGame extends SceneGame {
                if((squad[selectedUnit].actionPoints > 0) && (squad[selectedUnit].initiative == squad[top].initiative))
                {
                squad[selectedUnit].posy = squad[selectedUnit].posy +1;
-               selectedUnity--;
                squad[selectedUnit].actionPoints--;
-
                }
                else
                {
@@ -1022,7 +887,7 @@ public class HelloGame extends SceneGame {
            aDown = ev.down;
            if(aDown){
              boolean nowall = true;
-             for (int i = 0; i < objectLimit; i++){
+             for (int i = 0; i < w.objectLimit; i++){
                if ((objectArr[i].x == (squad[selectedUnit].posx-1)) && (objectArr[i].y == squad[selectedUnit].posy)){
                  nowall = objectArr[i].passability;
                  break;
@@ -1032,7 +897,6 @@ public class HelloGame extends SceneGame {
                if((squad[selectedUnit].actionPoints > 0) && (squad[selectedUnit].initiative == squad[top].initiative))
                {
                squad[selectedUnit].posx = squad[selectedUnit].posx -1;
-               selectedUnity--;
                squad[selectedUnit].actionPoints--;
                }
                else
@@ -1054,7 +918,7 @@ public class HelloGame extends SceneGame {
            dDown = ev.down;
            if(dDown){
                boolean nowall = true;
-               for (int i = 0; i < objectLimit; i++){
+               for (int i = 0; i < w.objectLimit; i++){
                  if ((objectArr[i].x == (squad[selectedUnit].posx+1)) && (objectArr[i].y == squad[selectedUnit].posy)){
                    nowall = objectArr[i].passability;
                    break;
@@ -1064,7 +928,6 @@ public class HelloGame extends SceneGame {
                  if((squad[selectedUnit].actionPoints > 0) && (squad[selectedUnit].initiative == squad[top].initiative))
                  {
                  squad[selectedUnit].posx = squad[selectedUnit].posx +1;
-                 selectedUnity--;
                  squad[selectedUnit].actionPoints--;
 
                  }
@@ -1093,7 +956,7 @@ public class HelloGame extends SceneGame {
           case CONTROL:{
             ctrlDown = ev.down;
             if (ctrlDown){
-              for(int i=0; i<objectLimit; i++){
+              for(int i=0; i<w.objectLimit; i++){
                 if ((objectArr[i].x >= squad[selectedUnit].posx-1) && (objectArr[i].x <= squad[selectedUnit].posx+1) && (objectArr[i].y >= squad[selectedUnit].posy-1) && (objectArr[i].y <= squad[selectedUnit].posy+1))
                 {
                   if(squad[selectedUnit].actionPoints <= 0){
@@ -1166,10 +1029,8 @@ public class HelloGame extends SceneGame {
 
           selectedUnit = -1;
           for(int i=0; i<squadLimit;i++){
-            if ((event.x() >= shipPositionX+squad[i].posx*floorw) && (event.x() <= shipPositionX+(squad[i].posx+1)*floorw) && (event.y() >= shipPositionY+squad[i].posy*floorh) && (event.y() <= shipPositionY+(squad[i].posy+1)*floorh)){
+            if ((event.x() >= shipPositionX+squad[i].posx*w.floorw) && (event.x() <= shipPositionX+(squad[i].posx+1)*w.floorw) && (event.y() >= shipPositionY+squad[i].posy*w.floorh) && (event.y() <= shipPositionY+(squad[i].posy+1)*w.floorh)){
               selectedUnit=i;
-              selectedUnitx=shipPositionX+squad[i].posx*floorw;
-              selectedUnity=shipPositionY+squad[i].posy*floorh;
 
 
               if (squad[selectedUnit].name=="Commissioner"){
@@ -1199,8 +1060,8 @@ public class HelloGame extends SceneGame {
             }
           };
           if ((selectedUnit== -1) &&
-              (event.x() <=shipPositionX+testship.floorArray.length*floorw ) &&
-              (event.y() <=shipPositionY+testship.floorArray[0].length*floorh) &&
+              (event.x() <=shipPositionX+testship.floorArray.length*w.floorw ) &&
+              (event.y() <=shipPositionY+testship.floorArray[0].length*w.floorh) &&
               (event.x() >= shipPositionX) &&
               (event.y() >= shipPositionY)
               ){

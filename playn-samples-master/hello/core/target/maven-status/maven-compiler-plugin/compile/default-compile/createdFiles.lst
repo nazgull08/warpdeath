@@ -1,9 +1,6 @@
-playn\sample\hello\core\HelloGame$SpaceShip.class
-playn\sample\hello\core\HelloGame$Object.class
-playn\sample\hello\core\HelloGame$ShipFloor.class
-playn\sample\hello\core\HelloGame$SpaceShipView.class
-playn\sample\hello\core\HelloGame$6.class
-playn\sample\hello\core\HelloGame$SelectionView.class
-playn\sample\hello\core\HelloGame$HUD.class
-playn\sample\hello\core\HelloGame$ObjectView.class
-playn\sample\hello\core\HelloGame$5.class
+playn/sample/hello/core/World.class
+playn/sample/hello/core/OurMouse.class
+playn/sample/hello/core/Object.class
+playn/sample/hello/core/OurKeyboard.class
+playn/sample/hello/core/Unit.class
+playn/sample/hello/core/HelloGame$Position.class
