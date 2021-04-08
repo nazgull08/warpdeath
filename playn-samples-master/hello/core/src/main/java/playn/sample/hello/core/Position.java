@@ -55,62 +55,11 @@ import static java.lang.Math.max;
 import static java.lang.Math.floor;
 import pythagoras.f.IDimension;
 
-public class Unit {//Класс юнита
-  public String name, age, role;
-  public int hp, energy, mind, morale, hunger, thirst, fireres, electres, bleedres, stunres;
-  public int actionPoints, initiative;
-  public int posx, posy;
+public class Position{
+  int x,y;
 
-  public Unit(String nm, String ag, String rl, int h, int en, int x, int y, int m, int hun, int init) { //Конструктор юнита
-    name = nm;
-    age  = ag;
-    role = rl;
-    hp   = h;
-    energy = en;
-    mind = 100;
-    morale = m;
-    hunger = hun;
-    thirst = 100;
-    fireres  = 100;
-    electres = 100;
-    bleedres = 100;
-    stunres  = 100;
-
-    initiative = init;
-
-
-    actionPoints = 3;
-
-    posx = x;
-    posy = y;
+  Position(int x1, int y1){
+    x = x1;
+    y = y1;
   }
-
-  public Unit(String nm, String ag, String rl, int h, int en, int x, int y, int init) { //Конструктор юнита, перегруз
-    name = nm;
-    age  = ag;
-    role = rl;
-    hp   = h;
-    energy = en;
-    mind = 100;
-    morale = 100;
-    hunger = 100;
-    thirst = 100;
-    fireres  = 100;
-    electres = 100;
-    bleedres = 100;
-    stunres  = 100;
-
-    initiative = init;
-
-    actionPoints = 10;
-
-    posx = x;
-    posy = y;
-  }
-
-  public Unit(String nm)
-  {
-    name = nm;
-  }
-
 }

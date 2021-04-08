@@ -92,7 +92,7 @@ public class HelloGame extends SceneGame {
   float cameraX = 0;
   float cameraY = 0;
 
-  int actionPointsDef = 10;
+  int actionPointsDef = 4;
 
   int shipPositionX = 0;
   int shipPositionY = 0;
@@ -102,10 +102,12 @@ public class HelloGame extends SceneGame {
 
   boolean showHUD = true;
 
+  boolean showWay = false;
+
   boolean animation = true;
   boolean speakAnimation = true;
 
-  boolean keyUpDown, keyDownDown, keyLeftDown, keyRightDown, shiftDown, ctrlDown, tabDown, wDown, sDown, aDown, dDown;
+  boolean keyUpDown, keyDownDown, keyLeftDown, keyRightDown, eDown, ctrlDown, tabDown, wDown, sDown, aDown, dDown;
 
   Graphics gfx = plat.graphics();
 
@@ -154,6 +156,8 @@ public class HelloGame extends SceneGame {
   Image flImage8 = plat.assets().getImage("images/floor/floor8.png");
   Image flsImage = plat.assets().getImage("images/floor/floors.png");
   Image flActiveImage = plat.assets().getImage("images/floor/floora.png");
+
+  Image wayImage = plat.assets().getImage("images/floor/way.png");
 
   Image marineImage = plat.assets().getImage("images/models/marine.png");
   Image marinebImage = plat.assets().getImage("images/models/marineb.png");
@@ -280,6 +284,12 @@ public class HelloGame extends SceneGame {
         new SquadView(Squadlayer, squad[i], i); //Рисуем члена отряда
     }
 
+    if(showWay) {
+      final GroupLayer Waylayer = new GroupLayer();
+      rootLayer.add(Waylayer);
+      new WayView(Waylayer, w.wayPos);
+    };
+
     // ----------HUD
     if(showHUD) {
       final GroupLayer Hudlayer = new GroupLayer();
@@ -375,6 +385,18 @@ public class HelloGame extends SceneGame {
           final ImageLayer layer = new ImageLayer(image);
           layer.setOrigin(ImageLayer.Origin.UL);
           Objectlayer.addAt(layer, shipPositionX+w.floorw*o.x, shipPositionY+w.floorh*o.y);
+        }
+      }
+
+  public class WayView {
+    public WayView(final GroupLayer Waylayer, Position[] way){
+
+      for(int i=0;i<way.length;i++){
+          final ImageLayer layer = new ImageLayer(wayImage);
+          layer.setOrigin(ImageLayer.Origin.UL);
+            System.out.printf("x:%d, y:%d \n",way[i].x, way[i].y);
+            Waylayer.addAt(layer, shipPositionX+w.floorw*way[i].x, shipPositionY+w.floorh*way[i].y);
+          }
         }
       }
 /*
@@ -545,8 +567,70 @@ public class HelloGame extends SceneGame {
     }
   }
 
+  public boolean isPassable(Position p, int objectLimit, Object[] objArr){
+      boolean nowall = true;
+      for(int i=0;i<objectLimit;i++){
+        if ((objArr[i].x==p.x)&&(objArr[i].y==p.y)&&(!objArr[i].passability)){
+            nowall=false;
+            break;
+        }
+      }
+      return nowall;
+    }
+
+  public Position[] getAllPassableBounds(Position p, int oL, Object[] oA){
+    int c = 0;
+    Position[] bounds = new Position[8];
+    Position lu = new Position(p.x-1,p.y-1);
+    Position u  = new Position(p.x,p.y-1);
+    Position ru = new Position(p.x+1,p.y-1);
+    Position l  = new Position(p.x-1,p.y);
+    Position r  = new Position(p.x+1,p.y);
+    Position ld = new Position(p.x-1,p.y+1);
+    Position d  = new Position(p.x,p.y+1);
+    Position rd = new Position(p.x+1,p.y+1);
+    if(isPassable(lu, oL, oA)){
+      bounds[c] = lu;
+      c++;
+    };
+    if(isPassable(u, oL, oA)){
+      bounds[c] = u;
+      c++;
+    };
+    if(isPassable(ru, oL, oA)){
+      bounds[c] = ru;
+      c++;
+    };
+    if(isPassable(l, oL, oA)){
+      bounds[c] = l;
+      c++;
+    };
+    if(isPassable(r, oL, oA)){
+      bounds[c] = r;
+      c++;
+    };
+    if(isPassable(ld, oL, oA)){
+      bounds[c] = ld;
+      c++;
+    };
+    if(isPassable(d, oL, oA)){
+      bounds[c] = d;
+      c++;
+    };
+    if(isPassable(rd, oL, oA)){
+      bounds[c] = rd;
+      c++;
+    };
+
+    Position[] b = new Position[c];
+    for(int i = 0; i<c;i++){
+      b[i] = bounds[i];
+    }
+    return b;
+  }
 
   public final Pointer pointer;
+
 
   @Override public void update(Clock clock) {
     super.update(clock);
@@ -761,12 +845,26 @@ public class HelloGame extends SceneGame {
       };
     });
 
+
     // Обработчик клавиатуры
     plat.input().keyboardEvents.connect(new Keyboard.KeySlot() {
       public void onEmit (Keyboard.KeyEvent ev) {
         switch (ev.key) {
-          case SHIFT: {
-           shiftDown = ev.down;
+          case E: {
+           eDown = ev.down;
+           if(selectedUnit!=-1 && eDown){
+             int a = squad[selectedUnit].actionPoints;
+             Position startPos = new Position (squad[selectedUnit].posx,squad[selectedUnit].posy);
+             Position[] way;
+             Node<Position> parentNode = new Node<Position>(startPos);
+             Position[] boundsList = getAllPassableBounds(startPos, w.objectLimit, objectArr);
+             w.wayPos = boundsList;
+             showWay=!showWay;
+             for(int i=0;i<w.wayPos.length;i++){
+               parentNode.addChild(boundsList.get(i));
+               
+             }
+           };
            break;
           }
           case UP: {
@@ -1053,6 +1151,7 @@ public class HelloGame extends SceneGame {
                     };
                     if (soundCounter2 == 5){soundCounter2 = 0;};  // сброс реплик
                   };
+
 
 
 

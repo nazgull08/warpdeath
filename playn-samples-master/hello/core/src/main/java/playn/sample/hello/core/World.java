@@ -61,6 +61,7 @@ public class World {//Глобальные константы
   public int objectLimit = 0;
   public int shipPositionX = 0;
   public int shipPositionY = 0;
+  public Position[] wayPos;
   World(){
   };
 }

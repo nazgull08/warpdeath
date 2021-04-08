@@ -75,6 +75,7 @@ public class OurMouse {
     if(noobj || (nowall && !noobj)){
       selectedUnit.posx = obposx;
       selectedUnit.posy = obposy;
+      commissionerSounds[2].setVolume(0.1f);
       commissionerSounds[2].play();
     }
   }
