@@ -97,7 +97,6 @@ public class HelloGame extends SceneGame {
   int shipPositionX = 0;
   int shipPositionY = 0;
 
-
   int startdelay = 20;
 
   boolean showHUD = true;
@@ -394,7 +393,6 @@ public class HelloGame extends SceneGame {
       for(int i=0;i<way.length;i++){
           final ImageLayer layer = new ImageLayer(wayImage);
           layer.setOrigin(ImageLayer.Origin.UL);
-            System.out.printf("x:%d, y:%d \n",way[i].x, way[i].y);
             Waylayer.addAt(layer, shipPositionX+w.floorw*way[i].x, shipPositionY+w.floorh*way[i].y);
           }
         }
@@ -860,10 +858,17 @@ public class HelloGame extends SceneGame {
              Position[] boundsList = getAllPassableBounds(startPos, w.objectLimit, objectArr);
              w.wayPos = boundsList;
              showWay=!showWay;
-             for(int i=0;i<w.wayPos.length;i++){
-               parentNode.addChild(boundsList.get(i));
-               
+             for(int i=0;i<boundsList.length;i++){
+               System.out.printf("Adding child %d\n",i);
+               parentNode.addChild(new Node<Position>(boundsList[i]));
+               //parentNode.addChild(new Node<Position>(boundsList[i]));
+             };
+             System.out.printf("=================================\n");
+             List<Node<Position>> children = parentNode.getChildren();
+             for(int i = 0; i<children.size();i++){
+               System.out.printf("Node %d, %d\n",children.get(i).data.x,children.get(i).data.y);
              }
+             System.out.printf("=================================\n");
            };
            break;
           }
