@@ -339,7 +339,7 @@ public class HelloGame extends SceneGame {
       if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 9)) {image = selection9;};
       final ImageLayer layer = new ImageLayer(image);
       layer.setOrigin(ImageLayer.Origin.UL);
-      SelectionLayer.addAt(layer, shipPositionX+squad[selectedUnit].posx*w.floorw, shipPositionY+squad[selectedUnit].posy*w.floorh);
+      SelectionLayer.addAt(layer, w.shipPositionX+squad[selectedUnit].posx*w.floorw, w.shipPositionY+squad[selectedUnit].posy*w.floorh);
     }
   }
 
@@ -364,7 +364,7 @@ public class HelloGame extends SceneGame {
           }
           final ImageLayer layer = new ImageLayer(image);
           layer.setOrigin(ImageLayer.Origin.UL);
-          Floorlayer.addAt(layer, shipPositionX+w.floorw*j, shipPositionY+w.floorh*i);
+          Floorlayer.addAt(layer, w.shipPositionX+w.floorw*j, w.shipPositionY+w.floorh*i);
         }
       }
     }
@@ -383,7 +383,7 @@ public class HelloGame extends SceneGame {
           }
           final ImageLayer layer = new ImageLayer(image);
           layer.setOrigin(ImageLayer.Origin.UL);
-          Objectlayer.addAt(layer, shipPositionX+w.floorw*o.x, shipPositionY+w.floorh*o.y);
+          Objectlayer.addAt(layer, w.shipPositionX+w.floorw*o.x, w.shipPositionY+w.floorh*o.y);
         }
       }
 
@@ -393,7 +393,7 @@ public class HelloGame extends SceneGame {
       for(int i=0;i<way.length;i++){
           final ImageLayer layer = new ImageLayer(wayImage);
           layer.setOrigin(ImageLayer.Origin.UL);
-            Waylayer.addAt(layer, shipPositionX+w.floorw*way[i].x, shipPositionY+w.floorh*way[i].y);
+            Waylayer.addAt(layer, w.shipPositionX+w.floorw*way[i].x, w.shipPositionY+w.floorh*way[i].y);
           }
         }
       }
@@ -430,25 +430,25 @@ public class HelloGame extends SceneGame {
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, shipPositionX+unt.posx*w.floorw, shipPositionY+unt.posy*w.floorh);
+        Squadlayer.addAt(layer, w.shipPositionX+unt.posx*w.floorw, w.shipPositionY+unt.posy*w.floorh);
       }
       if(squad[i].name == "TТайкус")
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, shipPositionX+unt.posx*w.floorw, shipPositionY+unt.posy*w.floorh);
+        Squadlayer.addAt(layer, w.shipPositionX+unt.posx*w.floorw, w.shipPositionY+unt.posy*w.floorh);
       }
       if(squad[i].name == "Ray")
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, shipPositionX+unt.posx*w.floorw, shipPositionY+unt.posy*w.floorh);
+        Squadlayer.addAt(layer, w.shipPositionX+unt.posx*w.floorw, w.shipPositionY+unt.posy*w.floorh);
       }
       if(squad[i].name == "Commissioner")
       {
         final ImageLayer layer = new ImageLayer(cImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, shipPositionX+unt.posx*w.floorw, shipPositionY+unt.posy*w.floorh);
+        Squadlayer.addAt(layer, w.shipPositionX+unt.posx*w.floorw, w.shipPositionY+unt.posy*w.floorh);
       }
 
       //final ImageLayer layer = new ImageLayer(marineImage);
@@ -730,14 +730,14 @@ public class HelloGame extends SceneGame {
 
 
         switch (movingWay) {
-          case "Left":      {shipPositionX+=22;break;}
-          case "Right":     {shipPositionX-=22;break;}
-          case "Up":        {shipPositionY+=22;break;}
-          case "Down":      {shipPositionY-=22;break;}
-          case "LeftUp":    {shipPositionX+=22;shipPositionY+=22;break;}
-          case "RightUp":   {shipPositionX-=22;shipPositionY+=22;break;}
-          case "LeftDown":  {shipPositionX+=22;shipPositionY-=22;break;}
-          case "RightDown": {shipPositionX-=22;shipPositionY-=22;break;}
+          case "Left":      {w.shipPositionX+=22;break;}
+          case "Right":     {w.shipPositionX-=22;break;}
+          case "Up":        {w.shipPositionY+=22;break;}
+          case "Down":      {w.shipPositionY-=22;break;}
+          case "LeftUp":    {w.shipPositionX+=22;w.shipPositionY+=22;break;}
+          case "RightUp":   {w.shipPositionX-=22;w.shipPositionY+=22;break;}
+          case "LeftDown":  {w.shipPositionX+=22;w.shipPositionY-=22;break;}
+          case "RightDown": {w.shipPositionX-=22;w.shipPositionY-=22;break;}
           default : {break;}
         }
 
@@ -830,6 +830,7 @@ public class HelloGame extends SceneGame {
             if(event.button == Mouse.ButtonEvent.Id.RIGHT)
             {
               OurMouse.movingClickMouse(objectArr,event ,squad[selectedUnit],commissionerSounds, w);
+              if(showWay){showWay=!showWay;}
             }
           }
         }
@@ -853,22 +854,11 @@ public class HelloGame extends SceneGame {
            if(selectedUnit!=-1 && eDown){
              int a = squad[selectedUnit].actionPoints;
              Position startPos = new Position (squad[selectedUnit].posx,squad[selectedUnit].posy);
-             Position[] way;
-             Node<Position> parentNode = new Node<Position>(startPos);
              Position[] boundsList = getAllPassableBounds(startPos, w.objectLimit, objectArr);
              w.wayPos = boundsList;
              showWay=!showWay;
-             for(int i=0;i<boundsList.length;i++){
-               System.out.printf("Adding child %d\n",i);
-               parentNode.addChild(new Node<Position>(boundsList[i]));
-               //parentNode.addChild(new Node<Position>(boundsList[i]));
-             };
-             System.out.printf("=================================\n");
-             List<Node<Position>> children = parentNode.getChildren();
-             for(int i = 0; i<children.size();i++){
-               System.out.printf("Node %d, %d\n",children.get(i).data.x,children.get(i).data.y);
-             }
-             System.out.printf("=================================\n");
+
+
            };
            break;
           }
@@ -1132,7 +1122,7 @@ public class HelloGame extends SceneGame {
 
           selectedUnit = -1;
           for(int i=0; i<squadLimit;i++){
-            if ((event.x() >= shipPositionX+squad[i].posx*w.floorw) && (event.x() <= shipPositionX+(squad[i].posx+1)*w.floorw) && (event.y() >= shipPositionY+squad[i].posy*w.floorh) && (event.y() <= shipPositionY+(squad[i].posy+1)*w.floorh)){
+            if ((event.x() >= w.shipPositionX+squad[i].posx*w.floorw) && (event.x() <= w.shipPositionX+(squad[i].posx+1)*w.floorw) && (event.y() >= w.shipPositionY+squad[i].posy*w.floorh) && (event.y() <= w.shipPositionY+(squad[i].posy+1)*w.floorh)){
               selectedUnit=i;
 
 
@@ -1164,10 +1154,10 @@ public class HelloGame extends SceneGame {
             }
           };
           if ((selectedUnit== -1) &&
-              (event.x() <=shipPositionX+testship.floorArray.length*w.floorw ) &&
-              (event.y() <=shipPositionY+testship.floorArray[0].length*w.floorh) &&
-              (event.x() >= shipPositionX) &&
-              (event.y() >= shipPositionY)
+              (event.x() <=w.shipPositionX+testship.floorArray.length*w.floorw ) &&
+              (event.y() <=w.shipPositionY+testship.floorArray[0].length*w.floorh) &&
+              (event.x() >= w.shipPositionX) &&
+              (event.y() >= w.shipPositionY)
               ){
             landSounds[0].play();
           }
