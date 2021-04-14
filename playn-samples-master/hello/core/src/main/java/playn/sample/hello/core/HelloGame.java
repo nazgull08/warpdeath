@@ -638,9 +638,9 @@ public class HelloGame extends SceneGame {
     super(plat, 25); // 25 millis per frame = ~40fps
 
     Unit tychus = new Unit("TТайкус","40","Танк",200,100, 6, 1, 142, 242, 20); //Создаем Тайкуса в c координатами 3 5
-    Unit raynor = new Unit("PРейнор","40","ДД",150,150, 20, 7, 422, 144, 14); //Создаем Рейнора с координатами 0 2
-    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 20, 6, 11, 42, 7); //Создаем Рейнора с координатами 0 2
-    Unit commissioner = new Unit("Commissioner","40","Commissioner",125 ,125, 22, 7, 10); //Создаем Рейнора с координатами 0 2
+    Unit raynor = new Unit("PРейнор","40","ДД",150,150, 1, 1, 422, 144, 14); //Создаем Рейнора с координатами 0 2
+    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 3, 3, 11, 42, 7); //Создаем Рейнора с координатами 0 2
+    Unit commissioner = new Unit("Commissioner","40","Commissioner",125 ,125, 6, 5, 10); //Создаем Рейнора с координатами 0 2
     Unit hollow = new Unit("Hollow"); //Создаем Рейнора с координатами 0 2
 
     squad[0] = tychus; // Добавляем Тайкуса в отряд
@@ -914,6 +914,36 @@ public class HelloGame extends SceneGame {
            break;
           }
 
+          case K1:
+          {
+           selectedUnit = 0;
+           w.shipPositionX = -squad[selectedUnit].posx*w.floorw + (int)((size.width() -256)/ 2); // ценрализация камеры
+           w.shipPositionY = -squad[selectedUnit].posy*w.floorh + (int)((size.height() -256)/ 2);
+           break;
+          }
+          case K2:
+          {
+           selectedUnit = 1;
+           w.shipPositionX = -squad[selectedUnit].posx*w.floorw + (int)((size.width() -256)/ 2);
+           w.shipPositionY = -squad[selectedUnit].posy*w.floorh + (int)((size.height() -256)/ 2);
+           break;
+          }
+          case K3:
+          {
+           selectedUnit = 2;
+           w.shipPositionX = -squad[selectedUnit].posx*w.floorw + (int)((size.width() -256)/ 2);
+           w.shipPositionY = -squad[selectedUnit].posy*w.floorh + (int)((size.height() -256)/ 2);
+           break;
+          }
+          case K4:
+          {
+           selectedUnit = 3;
+           w.shipPositionX = -squad[selectedUnit].posx*w.floorw + (int)((size.width() -256)/ 2);
+           w.shipPositionY = -squad[selectedUnit].posy*w.floorh + (int)((size.height() -256)/ 2);
+           break;
+          }
+
+
           case W: {
            wDown = ev.down;
            if(wDown){
@@ -942,6 +972,8 @@ public class HelloGame extends SceneGame {
                }
              }
            };
+           w.shipPositionX = -squad[selectedUnit].posx*w.floorw + (int)((size.width() -256)/ 2);
+           w.shipPositionY = -squad[selectedUnit].posy*w.floorh + (int)((size.height() -256)/ 2);
            break;
           }
 
@@ -973,6 +1005,8 @@ public class HelloGame extends SceneGame {
                }
              }
            };
+           w.shipPositionX = -squad[selectedUnit].posx*w.floorw + (int)((size.width() -256)/ 2);
+           w.shipPositionY = -squad[selectedUnit].posy*w.floorh + (int)((size.height() -256)/ 2);
            break;
           }
 
@@ -1004,6 +1038,8 @@ public class HelloGame extends SceneGame {
                }
              }
            };
+           w.shipPositionX = -squad[selectedUnit].posx*w.floorw + (int)((size.width() -256)/ 2);
+           w.shipPositionY = -squad[selectedUnit].posy*w.floorh + (int)((size.height() -256)/ 2);
            break;
           }
 
@@ -1043,6 +1079,8 @@ public class HelloGame extends SceneGame {
                  }
                }
            };
+           w.shipPositionX = -squad[selectedUnit].posx*w.floorw + (int)((size.width() -256)/ 2);
+           w.shipPositionY = -squad[selectedUnit].posy*w.floorh + (int)((size.height() -256)/ 2);
            break;
           }
 
