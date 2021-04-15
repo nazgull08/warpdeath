@@ -116,6 +116,9 @@ public class HelloGame extends SceneGame {
 
   Image bgImage = plat.assets().getImage("images/twin.png");
 
+
+  Image isoTest = plat.assets().getImage("images/isoTest1.png");
+
   Image wallU = plat.assets().getImage("images/floor/wallU.png");
   Image wallR = plat.assets().getImage("images/floor/wallR.png");
   Image wallF = plat.assets().getImage("images/floor/wallF.png");
@@ -289,6 +292,12 @@ public class HelloGame extends SceneGame {
       new WayView(Waylayer, w.wayPos);
     };
 
+
+//ISOMETRIC
+    final GroupLayer isoLayer = new GroupLayer();
+    rootLayer.add(isoLayer);
+//    new IsoFloor(isoLayer);
+
     // ----------HUD
     if(showHUD) {
       final GroupLayer Hudlayer = new GroupLayer();
@@ -397,6 +406,19 @@ public class HelloGame extends SceneGame {
           }
         }
       }
+
+  public class IsoFloor {
+    public IsoFloor(final GroupLayer isoLayer){
+      for(int i=0;i<10;i++){
+        for(int j=0; j<10; j++){
+          final ImageLayer layer = new ImageLayer(isoTest);
+          layer.setOrigin(ImageLayer.Origin.UL);
+          Position isoPos = toIsometric(i,j);
+          isoLayer.addAt(layer, isoPos.x, isoPos.y);
+        }
+      }
+    }
+  }
 /*
       class SortByInit implements Comparator<Unit>
       {
@@ -633,6 +655,12 @@ public class HelloGame extends SceneGame {
   @Override public void update(Clock clock) {
     super.update(clock);
   };
+
+  public Position toIsometric(int x, int y){
+    int isoX = w.shipPositionX+x*(w.isofloorw/2)-y*(w.isofloorw/2);
+    int isoY = w.shipPositionY+y*(w.isofloorh/2)+x*(w.isofloorh/2);
+    return (new Position(isoX,isoY));
+  }
 
   public HelloGame(Platform plat) {
     super(plat, 25); // 25 millis per frame = ~40fps

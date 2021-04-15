@@ -1,7 +1,1 @@
-playn\sample\hello\core\Object.class
-playn\sample\hello\core\HelloGame$WayView.class
-playn\sample\hello\core\Unit.class
-playn\sample\hello\core\World.class
-playn\sample\hello\core\OurKeyboard.class
-playn\sample\hello\core\OurMouse.class
-playn\sample\hello\core\Position.class
+playn/sample/hello/core/HelloGame$IsoFloor.class
