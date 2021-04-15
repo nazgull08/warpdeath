@@ -296,7 +296,7 @@ public class HelloGame extends SceneGame {
 //ISOMETRIC
     final GroupLayer isoLayer = new GroupLayer();
     rootLayer.add(isoLayer);
-//    new IsoFloor(isoLayer);
+    new IsoFloor(isoLayer);
 
     // ----------HUD
     if(showHUD) {
