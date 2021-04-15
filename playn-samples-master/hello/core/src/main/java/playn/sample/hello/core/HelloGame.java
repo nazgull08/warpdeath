@@ -414,7 +414,7 @@ public class HelloGame extends SceneGame {
           final ImageLayer layer = new ImageLayer(isoTest);
           layer.setOrigin(ImageLayer.Origin.UL);
           Position isoPos = toIsometric(i,j);
-          isoLayer.addAt(layer, isoPos.x, isoPos.y);
+          isoLayer.addAt(layer, 2*isoPos.x, 2*isoPos.y);
         }
       }
     }
