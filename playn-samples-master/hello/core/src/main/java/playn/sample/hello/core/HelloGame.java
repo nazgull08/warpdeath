@@ -121,6 +121,11 @@ public class HelloGame extends SceneGame {
   Image isoWall = plat.assets().getImage("images/isoWall2.png");
   Image isoWall1 = plat.assets().getImage("images/isoWall3.png");
 
+  Image isoDoorO = plat.assets().getImage("images/isoDoorO.png");
+  Image isoDoorC = plat.assets().getImage("images/isoDoorC.png");
+
+  Image isoEmpty = plat.assets().getImage("images/isoEmpty.png");
+
   Image wallU = plat.assets().getImage("images/floor/wallU.png");
   Image wallR = plat.assets().getImage("images/floor/wallR.png");
   Image wallF = plat.assets().getImage("images/floor/wallF.png");
@@ -271,7 +276,7 @@ public class HelloGame extends SceneGame {
     Objectlayer = new GroupLayer();
     rootLayer.add(Objectlayer);
     for (int i=0; i<w.objectLimit; i++){
-      new ObjectView(Objectlayer, objectArr[i]);
+      //new ObjectView(Objectlayer, objectArr[i]);
     }
 
 
@@ -298,7 +303,7 @@ public class HelloGame extends SceneGame {
 //ISOMETRIC
     final GroupLayer isoLayer = new GroupLayer();
     rootLayer.add(isoLayer);
-    new IsoFloor(isoLayer);
+//    new IsoFloor(isoLayer);
 
     // ----------HUD
     if(showHUD) {
@@ -359,11 +364,12 @@ public class HelloGame extends SceneGame {
       for (int i=0; i<s.floorArray.length;i++){
         for(int j=0; j<s.floorArray[i].length;j++){
           Image image = empty;
+          int height = 0;
           switch (s.floorArray[i][j].type) {
-            case "sF":{image = flImage1; break;}
-            case "emptyF":{image = empty; break;}
+            case "sF":{image = isoTest; break;}
+            case "emptyF":{image = isoEmpty; break;}
             case "sWF":{image = wallF; break;}
-            case "sWFb":{image = walFb; break;}
+            case "sWFb":{image = isoWall1; height=w.isoHeight; break;}
             case "sWFU":{image = wallU; break;}
             case "sWFR":{image = wallR; break;}
             case "sFUP":{image = passUp; break;}
@@ -375,7 +381,8 @@ public class HelloGame extends SceneGame {
           }
           final ImageLayer layer = new ImageLayer(image);
           layer.setOrigin(ImageLayer.Origin.UL);
-          Floorlayer.addAt(layer, w.shipPositionX+w.floorw*j, w.shipPositionY+w.floorh*i);
+          Position isoPos = toIsometric(i,j,height);
+          Floorlayer.addAt(layer, isoPos.x, isoPos.y);
         }
       }
     }
@@ -385,16 +392,17 @@ public class HelloGame extends SceneGame {
     public ObjectView(final GroupLayer Objectlayer, Object o){
           Image image = empty;
           switch (o.type) {
-            case "hull":{image = newwall; break;}
-            case "doorclosed":{image = doorC; break;}
-            case "dooropen":{image = doorO; break;}
+            case "hull":{image = isoWall1; break;}
+            case "doorclosed":{image = isoDoorC; break;}
+            case "dooropen":{image = isoDoorO; break;}
             case "hullC":{image = hullC; break;}
             case "hullO":{image = hullO; break;}
             default: break;
           }
           final ImageLayer layer = new ImageLayer(image);
           layer.setOrigin(ImageLayer.Origin.UL);
-          Objectlayer.addAt(layer, w.shipPositionX+w.floorw*o.x, w.shipPositionY+w.floorh*o.y);
+          Position isoPos = toIsometric(o.x,o.y,w.isoHeight);
+          Objectlayer.addAt(layer, isoPos.x, isoPos.y);
         }
       }
 
@@ -417,12 +425,12 @@ public class HelloGame extends SceneGame {
           final ImageLayer layer = new ImageLayer(isoTest);
           layer.setOrigin(ImageLayer.Origin.UL);
           Position isoPos = toIsometric(i,j);
-          isoLayer.addAt(layer, 2*isoPos.x, 2*isoPos.y);
+          isoLayer.addAt(layer, isoPos.x, isoPos.y);
         }else {
-          final ImageLayer layer = new ImageLayer(isoWall1);
+          final ImageLayer layer = new ImageLayer(isoDoorO);
           layer.setOrigin(ImageLayer.Origin.UL);
-          Position isoPos = toIsometric(i,j,24);
-          isoLayer.addAt(layer, 2*isoPos.x, 2*isoPos.y);
+          Position isoPos = toIsometric(i,j,48);
+          isoLayer.addAt(layer, isoPos.x, isoPos.y);
 
         }
         }
