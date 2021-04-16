@@ -58,12 +58,14 @@ import pythagoras.f.IDimension;
 public class OurMouse {
 
   static public void movingClickMouse(Object[] objectArr, Mouse.ButtonEvent event ,Unit selectedUnit, Sound[] commissionerSounds, World w) {
-    int obposx = (int) ((event.x() - w.shipPositionX) / w.floorw);
-    int obposy = (int) ((event.y() - w.shipPositionY) / w.floorh);
+    //int obposx = (int) ((event.x() - w.shipPositionX) / w.floorw);
+    //int obposy = (int) ((event.y() - w.shipPositionY) / w.floorh);
+    Position dataPos = fromIsometric((int)event.x(),(int)event.y(),w);
     boolean nowall = false;
     boolean noobj = true;
     for (int i = 0; i < w.objectLimit; i++){
-      if ((event.x() >= w.shipPositionX+objectArr[i].x*w.floorw) && (event.x() <= w.shipPositionX+(objectArr[i].x+1)*w.floorw) && (event.y() >= w.shipPositionY+objectArr[i].y*w.floorh) && (event.y() <= w.shipPositionY+(objectArr[i].y+1)*w.floorh))
+    //  if ((event.x() >= w.shipPositionX+objectArr[i].x*w.floorw) && (event.x() <= w.shipPositionX+(objectArr[i].x+1)*w.floorw) && (event.y() >= w.shipPositionY+objectArr[i].y*w.floorh) && (event.y() <= w.shipPositionY+(objectArr[i].y+1)*w.floorh))
+      if (objectArr[i].x==dataPos.x&&objectArr[i].y==dataPos.y)
       {
         nowall = objectArr[i].passability;
         noobj=false;
@@ -73,13 +75,21 @@ public class OurMouse {
 
     }
     if(noobj || (nowall && !noobj)){
-      selectedUnit.posx = obposx;
-      selectedUnit.posy = obposy;
+      selectedUnit.posx = dataPos.x;
+      selectedUnit.posy = dataPos.y;
       commissionerSounds[2].setVolume(0.1f);
       commissionerSounds[2].play();
     }
   }
 
+
+  static public Position fromIsometric(int x, int y, World w){
+    int posx = x-w.shipPositionX;
+    int posy = y-w.shipPositionY;
+    int dataX = (int) (posx/(w.isofloorw/2) + posy/(w.isofloorh/2)-1) /2;
+    int dataY = (int) (posy/(w.isofloorh/2) -(posx/(w.isofloorw/2))) /2;
+    return (new Position(dataX, dataY));
+  }
 
   static public String movingWayMouse(Mouse.MotionEvent event, IDimension size){
     String way = "None";

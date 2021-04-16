@@ -276,7 +276,7 @@ public class HelloGame extends SceneGame {
     Objectlayer = new GroupLayer();
     rootLayer.add(Objectlayer);
     for (int i=0; i<w.objectLimit; i++){
-      //new ObjectView(Objectlayer, objectArr[i]);
+      new ObjectView(Objectlayer, objectArr[i]);
     }
 
 
@@ -355,7 +355,8 @@ public class HelloGame extends SceneGame {
       if((selectedTime <= (selectedTimeCD*selectedTimeI)) && (selectedTimeI == 9)) {image = selection9;};
       final ImageLayer layer = new ImageLayer(image);
       layer.setOrigin(ImageLayer.Origin.UL);
-      SelectionLayer.addAt(layer, w.shipPositionX+squad[selectedUnit].posx*w.floorw, w.shipPositionY+squad[selectedUnit].posy*w.floorh);
+      Position isoPos = toIsometric(squad[selectedUnit].posx,squad[selectedUnit].posy);
+      SelectionLayer.addAt(layer, isoPos.x+64, isoPos.y-32);
     }
   }
 
@@ -381,7 +382,7 @@ public class HelloGame extends SceneGame {
           }
           final ImageLayer layer = new ImageLayer(image);
           layer.setOrigin(ImageLayer.Origin.UL);
-          Position isoPos = toIsometric(i,j,height);
+          Position isoPos = toIsometric(j,i,height);
           Floorlayer.addAt(layer, isoPos.x, isoPos.y);
         }
       }
@@ -465,30 +466,30 @@ public class HelloGame extends SceneGame {
       } else {
         cImage = commissionerbImage;
       }
-
+      Position isoPos = toIsometric(unt.posx,unt.posy);
       if(squad[i].name == "PРейнор")
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, w.shipPositionX+unt.posx*w.floorw, w.shipPositionY+unt.posy*w.floorh);
+        Squadlayer.addAt(layer, isoPos.x+64, isoPos.y-32);
       }
       if(squad[i].name == "TТайкус")
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, w.shipPositionX+unt.posx*w.floorw, w.shipPositionY+unt.posy*w.floorh);
+        Squadlayer.addAt(layer, isoPos.x+64, isoPos.y-32);
       }
       if(squad[i].name == "Ray")
       {
         final ImageLayer layer = new ImageLayer(mImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, w.shipPositionX+unt.posx*w.floorw, w.shipPositionY+unt.posy*w.floorh);
+        Squadlayer.addAt(layer, isoPos.x+64, isoPos.y-32);
       }
       if(squad[i].name == "Commissioner")
       {
         final ImageLayer layer = new ImageLayer(cImage);
         layer.setOrigin(ImageLayer.Origin.UL);
-        Squadlayer.addAt(layer, w.shipPositionX+unt.posx*w.floorw, w.shipPositionY+unt.posy*w.floorh);
+        Squadlayer.addAt(layer, isoPos.x+64, isoPos.y-32);
       }
 
       //final ImageLayer layer = new ImageLayer(marineImage);
@@ -684,6 +685,14 @@ public class HelloGame extends SceneGame {
     int isoX = w.shipPositionX+x*(w.isofloorw/2)-y*(w.isofloorw/2);
     int isoY = w.shipPositionY+y*(w.isofloorh/2)+x*(w.isofloorh/2) - h;
     return (new Position(isoX,isoY));
+  }
+
+  public Position fromIsometric(int x, int y){
+    int posx = x-w.shipPositionX;
+    int posy = y-w.shipPositionY;
+    int dataX = (int) (posx/(w.isofloorw/2) + posy/(w.isofloorh/2)-1) /2;
+    int dataY = (int) (posy/(w.isofloorh/2) -(posx/(w.isofloorw/2))) /2;
+    return (new Position(dataX, dataY));
   }
 
   public HelloGame(Platform plat) {
@@ -1209,10 +1218,12 @@ public class HelloGame extends SceneGame {
       @Override public void onEmit (Pointer.Event event) {
 
         if (event.kind.isStart) {
-
+          Position dataPos = fromIsometric((int)event.x(),(int)event.y());
+          System.out.printf("Click: %f, %f; Pos: %d, %d\n",event.x(),event.y(),dataPos.x,dataPos.y);
           selectedUnit = -1;
           for(int i=0; i<squadLimit;i++){
-            if ((event.x() >= w.shipPositionX+squad[i].posx*w.floorw) && (event.x() <= w.shipPositionX+(squad[i].posx+1)*w.floorw) && (event.y() >= w.shipPositionY+squad[i].posy*w.floorh) && (event.y() <= w.shipPositionY+(squad[i].posy+1)*w.floorh)){
+    //        if ((event.x() >= w.shipPositionX+squad[i].posx*w.floorw) && (event.x() <= w.shipPositionX+(squad[i].posx+1)*w.floorw) && (event.y() >= w.shipPositionY+squad[i].posy*w.floorh) && (event.y() <= w.shipPositionY+(squad[i].posy+1)*w.floorh)){
+            if (squad[i].posx==dataPos.x&&squad[i].posy==dataPos.y){
               selectedUnit=i;
 
 
