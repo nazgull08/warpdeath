@@ -119,6 +119,7 @@ public class HelloGame extends SceneGame {
 
   Image isoTest = plat.assets().getImage("images/isoTest1.png");
   Image isoWall = plat.assets().getImage("images/isoWall2.png");
+  Image isoWall1 = plat.assets().getImage("images/isoWall3.png");
 
   Image wallU = plat.assets().getImage("images/floor/wallU.png");
   Image wallR = plat.assets().getImage("images/floor/wallR.png");
@@ -418,7 +419,7 @@ public class HelloGame extends SceneGame {
           Position isoPos = toIsometric(i,j);
           isoLayer.addAt(layer, 2*isoPos.x, 2*isoPos.y);
         }else {
-          final ImageLayer layer = new ImageLayer(isoWall);
+          final ImageLayer layer = new ImageLayer(isoWall1);
           layer.setOrigin(ImageLayer.Origin.UL);
           Position isoPos = toIsometric(i,j,24);
           isoLayer.addAt(layer, 2*isoPos.x, 2*isoPos.y);
