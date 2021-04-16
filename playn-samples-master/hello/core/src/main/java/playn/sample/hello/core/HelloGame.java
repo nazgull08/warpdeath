@@ -118,6 +118,7 @@ public class HelloGame extends SceneGame {
 
 
   Image isoTest = plat.assets().getImage("images/isoTest1.png");
+  Image isoWall = plat.assets().getImage("images/isoWall2.png");
 
   Image wallU = plat.assets().getImage("images/floor/wallU.png");
   Image wallR = plat.assets().getImage("images/floor/wallR.png");
@@ -411,10 +412,18 @@ public class HelloGame extends SceneGame {
     public IsoFloor(final GroupLayer isoLayer){
       for(int i=0;i<10;i++){
         for(int j=0; j<10; j++){
+          if(i!=0&&j!=0){
           final ImageLayer layer = new ImageLayer(isoTest);
           layer.setOrigin(ImageLayer.Origin.UL);
           Position isoPos = toIsometric(i,j);
           isoLayer.addAt(layer, 2*isoPos.x, 2*isoPos.y);
+        }else {
+          final ImageLayer layer = new ImageLayer(isoWall);
+          layer.setOrigin(ImageLayer.Origin.UL);
+          Position isoPos = toIsometric(i,j,24);
+          isoLayer.addAt(layer, 2*isoPos.x, 2*isoPos.y);
+
+        }
         }
       }
     }
@@ -659,6 +668,12 @@ public class HelloGame extends SceneGame {
   public Position toIsometric(int x, int y){
     int isoX = w.shipPositionX+x*(w.isofloorw/2)-y*(w.isofloorw/2);
     int isoY = w.shipPositionY+y*(w.isofloorh/2)+x*(w.isofloorh/2);
+    return (new Position(isoX,isoY));
+  }
+
+  public Position toIsometric(int x, int y, int h){
+    int isoX = w.shipPositionX+x*(w.isofloorw/2)-y*(w.isofloorw/2);
+    int isoY = w.shipPositionY+y*(w.isofloorh/2)+x*(w.isofloorh/2) - h;
     return (new Position(isoX,isoY));
   }
 
