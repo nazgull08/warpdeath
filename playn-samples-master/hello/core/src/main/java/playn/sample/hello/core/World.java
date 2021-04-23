@@ -64,6 +64,8 @@ public class World {//Глобальные константы
   public int objectLimit = 0;
   public int shipPositionX = 0;
   public int shipPositionY = 0;
+  public Position cursor = new Position(0, 0);
+  public Position selectedTile = new Position(0, 0);
   public Position[] wayPos;
   World(){
   };

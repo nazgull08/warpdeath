@@ -106,7 +106,7 @@ public class HelloGame extends SceneGame {
   boolean animation = true;
   boolean speakAnimation = true;
 
-  boolean keyUpDown, keyDownDown, keyLeftDown, keyRightDown, eDown, ctrlDown, tabDown, wDown, sDown, aDown, dDown;
+  boolean keyUpDown, keyDownDown, keyLeftDown, keyRightDown, eDown, ctrlDown, tabDown, wDown, sDown, aDown, dDown, tDown;
 
   Graphics gfx = plat.graphics();
 
@@ -255,6 +255,7 @@ public class HelloGame extends SceneGame {
 
   SpaceShip startShip = new SpaceShip("Победоносный", startShipForm);
   SpaceShip testship = new SpaceShip("Test", boxShipForm);
+  //SpaceShip testship = new SpaceShip("Победоносный", startShipForm);
 
   public final void redraw(){
     rootLayer.disposeAll(); //Чистим все слои, принадлежащие корневому слою.
@@ -675,13 +676,31 @@ public class HelloGame extends SceneGame {
     super.update(clock);
   };
 
+  public int cross_product(int x1, int y1, int x2, int y2, int x,  int y)
+  {
+      return (x - x2) * (y2 - y1) - (y - y2) * (x2 - x1);
+  }
+
+  public boolean point_in_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int x,  int y)
+  {
+      boolean cp1 = cross_product(x1, y1, x2, y2, x, y) < 0;
+      boolean cp2 = cross_product(x2, y2, x3, y3, x, y) < 0;
+      boolean cp3 = cross_product(x3, y3, x1, y1, x, y) < 0;
+      return cp1 == cp2 && cp2 == cp3 && cp3 == cp1;
+  }
+
   public Position toIsometric(int x, int y){
+    //int y = -y1;
+
+    //int x = -x1;
     int isoX = w.shipPositionX+x*(w.isofloorw/2)-y*(w.isofloorw/2);
     int isoY = w.shipPositionY+y*(w.isofloorh/2)+x*(w.isofloorh/2);
     return (new Position(isoX,isoY));
   }
 
   public Position toIsometric(int x, int y, int h){
+    //int y = -y1;
+    //int x = -x1;
     int isoX = w.shipPositionX+x*(w.isofloorw/2)-y*(w.isofloorw/2);
     int isoY = w.shipPositionY+y*(w.isofloorh/2)+x*(w.isofloorh/2) - h;
     return (new Position(isoX,isoY));
@@ -875,7 +894,7 @@ public class HelloGame extends SceneGame {
       }
     });
       mainOST.setLooping(true);
-      mainOST.setVolume(0.06f);
+      mainOST.setVolume(0.01f);
       mainOST.play();
 
 
@@ -902,6 +921,7 @@ public class HelloGame extends SceneGame {
     plat.input().mouseEvents.connect(new Mouse.MotionSlot() {
       public void onEmit (Mouse.MotionEvent event) {
         movingWay = OurMouse.movingWayMouse(event, size);
+        OurMouse.cursorState(event, size, w);
       };
     });
 
@@ -972,6 +992,61 @@ public class HelloGame extends SceneGame {
           case SPACE:
           {
            squad[0].actionPoints = actionPointsDef;
+           break;
+          }
+
+          case T:
+          {
+           tDown = ev.down;
+           if(tDown)
+           {
+             int cursx = w.cursor.x + w.shipPositionX;
+             int cursy = w.cursor.y + w.shipPositionY;
+             for (int i=0; i<testship.floorArray.length;i++){
+               for(int j=0; j<testship.floorArray[i].length;j++){
+                 Position isoPos = toIsometric(j,i);
+                 if( (isoPos.x <= cursx) && (isoPos.y >= cursy) && ((isoPos.x + w.isofloorw) >= cursx) && ((isoPos.y + w.isofloorh) >= cursy) )
+                 {
+                 System.out.printf(".!.\n");
+                 System.out.printf("isoPos= %d %d\n",isoPos.x, isoPos.y);
+                 System.out.printf("curs= %d %d\n",cursx, cursy);
+                 boolean one   = false;
+                 boolean two   = false;
+                 boolean three = false;
+                 boolean four  = false;
+                 if(point_in_triangle(isoPos.x, isoPos.y + w.isofloorh/2, isoPos.x + w.isofloorw/2, isoPos.y, isoPos.x + w.isofloorw/2, isoPos.y + w.isofloorh/2, cursx, cursy))
+                 {
+                   one = true;
+                 }
+                 if(point_in_triangle(isoPos.x + w.isofloorw/2, isoPos.y, isoPos.x + w.isofloorw, isoPos.y + w.isofloorh/2, isoPos.x + w.isofloorw/2, isoPos.y + w.isofloorh/2, cursx, cursy))
+                 {
+                   two = true;
+                 }
+                 if(point_in_triangle(isoPos.x, isoPos.y + w.isofloorh/2, isoPos.x+ w.isofloorw/2, isoPos.y + w.isofloorh, isoPos.x + w.isofloorw/2, isoPos.y + w.isofloorh/2, cursx, cursy))
+                 {
+                   three = true;
+                 }
+                 if(point_in_triangle(isoPos.x+ w.isofloorw/2, isoPos.y + w.isofloorh, isoPos.x + w.isofloorw, isoPos.y + w.isofloorh/2, isoPos.x + w.isofloorw/2, isoPos.y + w.isofloorh/2, cursx, cursy))
+                 {
+                   four = true;
+                 }
+
+
+                   if(one || two || three || four)
+                   {
+                     w.selectedTile = new Position(j,i);
+                     System.out.printf("Selected tile %d %d\n", w.selectedTile.x, w.selectedTile.y);
+                     System.out.printf("\n");
+                     System.out.printf("=============================\n");
+                   }
+
+                 }
+
+
+               }
+             }
+
+           }
            break;
           }
 

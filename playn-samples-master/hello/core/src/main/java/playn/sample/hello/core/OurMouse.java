@@ -82,11 +82,15 @@ public class OurMouse {
     }
   }
 
+  static public void cursorState(Mouse.MotionEvent event, IDimension size, World w)
+  {
+    w.cursor = new Position((int)event.x(), (int)event.y());
+  }
 
   static public Position fromIsometric(int x, int y, World w){
-    int posx = x-w.shipPositionX;
-    int posy = y-w.shipPositionY;
-    int dataX = (int) (posx/(w.isofloorw/2) + posy/(w.isofloorh/2)-1) /2;
+    int posx = x-w.shipPositionX+58;
+    int posy = y-w.shipPositionY+58;
+    int dataX = (int) (posx/(w.isofloorw/2) + posy/(w.isofloorh/2)) /2;
     int dataY = (int) (posy/(w.isofloorh/2) -(posx/(w.isofloorw/2))) /2;
     return (new Position(dataX, dataY));
   }
