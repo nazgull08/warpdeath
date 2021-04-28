@@ -181,6 +181,9 @@ public class HelloGame extends SceneGame {
   Image face2Image = plat.assets().getImage("images/face/Face2.png");
   Image face3Image = plat.assets().getImage("images/face/Face3.png");
 
+  Image atackImage = plat.assets().getImage("images/button/buttonAtack.png");
+  Image grenadeImage = plat.assets().getImage("images/button/buttonGrenade.png");
+
   Image imageM = plat.assets().getImage( "images/menu.png");
   Image menuWide = plat.assets().getImage( "images/menuWide.png");
   Image menuH = plat.assets().getImage( "images/menuH.png");
@@ -588,8 +591,12 @@ public class HelloGame extends SceneGame {
       }
 
       final ImageLayer layerface = new ImageLayer(imageface);
+      final ImageLayer layerAtack = new ImageLayer(atackImage);
+      final ImageLayer layerGrenade = new ImageLayer(grenadeImage);
       layerface.setOrigin(ImageLayer.Origin.UL);
       UnitInfoLayer.addAt(layerface, x+47+17, y+47+17);
+      UnitInfoLayer.addAt(layerAtack, x+1000, y+30+15);
+      UnitInfoLayer.addAt(layerGrenade, x+1100, y+30+15);
       UnitInfoLayer.addAt(layerHP, x+220+100, y+30+15);
       UnitInfoLayer.addAt(layerEnergy, x+220+100, y+30+15+24);
       UnitInfoLayer.addAt(layerMind, x+220+100, y+30+15+15+24+10);
