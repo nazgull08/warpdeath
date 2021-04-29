@@ -182,7 +182,9 @@ public class HelloGame extends SceneGame {
   Image face3Image = plat.assets().getImage("images/face/Face3.png");
 
   Image atackImage = plat.assets().getImage("images/button/buttonAtack.png");
+  Image atack1Image = plat.assets().getImage("images/button/buttonAtack1.png");
   Image grenadeImage = plat.assets().getImage("images/button/buttonGrenade.png");
+  Image grenade1Image = plat.assets().getImage("images/button/buttonGrenade1.png");
 
   Image imageM = plat.assets().getImage( "images/menu.png");
   Image menuWide = plat.assets().getImage( "images/menuWide.png");
@@ -592,7 +594,9 @@ public class HelloGame extends SceneGame {
 
       final ImageLayer layerface = new ImageLayer(imageface);
       final ImageLayer layerAtack = new ImageLayer(atackImage);
+      final ImageLayer layerAtack1 = new ImageLayer(atack1Image);
       final ImageLayer layerGrenade = new ImageLayer(grenadeImage);
+      final ImageLayer layerGrenade1 = new ImageLayer(grenade1Image);
       layerface.setOrigin(ImageLayer.Origin.UL);
       UnitInfoLayer.addAt(layerface, x+47+17, y+47+17);
       UnitInfoLayer.addAt(layerAtack, x+1000, y+30+15);
@@ -700,8 +704,10 @@ public class HelloGame extends SceneGame {
     //int y = -y1;
 
     //int x = -x1;
-    int isoX = w.shipPositionX+x*(w.isofloorw/2)-y*(w.isofloorw/2);
-    int isoY = w.shipPositionY+y*(w.isofloorh/2)+x*(w.isofloorh/2);
+  int isoX = w.shipPositionX+x*(w.isofloorw/2)-y*(w.isofloorw/2);
+  int isoY = w.shipPositionY+y*(w.isofloorh/2)+x*(w.isofloorh/2);
+  //  int isoX = 0;
+  //  int isoY = 0;
     return (new Position(isoX,isoY));
   }
 
