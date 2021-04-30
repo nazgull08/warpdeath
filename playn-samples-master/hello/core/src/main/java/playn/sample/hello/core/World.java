@@ -56,6 +56,8 @@ import static java.lang.Math.floor;
 import pythagoras.f.IDimension;
 
 public class World {//Глобальные константы
+  public int hudy = (1080-255);
+
   public int floorw = 128;
   public int floorh = 128;
   public int isofloorw = 256;
