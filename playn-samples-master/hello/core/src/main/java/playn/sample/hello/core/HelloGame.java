@@ -114,6 +114,8 @@ public class HelloGame extends SceneGame {
 
   String movingWay = "none";
 
+        // "загрузка" изображений
+
   Image bgImage = plat.assets().getImage("images/twin.png");
 
 
@@ -218,6 +220,8 @@ public class HelloGame extends SceneGame {
   GroupLayer Objectlayer = new GroupLayer();
 
 
+    // "заготовка компонетов для корабля"
+
   ShipFloor sFloor = new ShipFloor("Стальной пол", "Обычный, ничем не примечательный кусок стали", 100, "sF");
   ShipFloor sWallF = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWF");
   ShipFloor sWalFb = new ShipFloor("Стальная стена", "Стандартная стальная обшивка", 100, "sWFb");
@@ -231,6 +235,7 @@ public class HelloGame extends SceneGame {
   ShipFloor emptyF  = new ShipFloor("Межзвёздная пустота", "Обычный вакуум", 0, "emptyF");
   ShipFloor emptyb  = new ShipFloor("Межзвёздная пустота", "Обычный вакуум", 0, "emptyb");
 
+    // сами корабли
   ShipFloor[][] startShipForm = new ShipFloor[][]{
     {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
     {emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, sWalFb, emptyb, emptyb, sWalFb, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF, emptyF},
@@ -307,7 +312,7 @@ public class HelloGame extends SceneGame {
 
 
 //ISOMETRIC
-    final GroupLayer isoLayer = new GroupLayer();
+    final GroupLayer isoLayer = new GroupLayer(); //яф
     rootLayer.add(isoLayer);
 //    new IsoFloor(isoLayer);
 
@@ -366,6 +371,8 @@ public class HelloGame extends SceneGame {
     }
   }
 
+
+  // зарисовка корабля
   public class SpaceShipView {
     public SpaceShipView(final GroupLayer Floorlayer, SpaceShip s){
       for (int i=0; i<s.floorArray.length;i++){
