@@ -59,7 +59,7 @@ public class Object {
   public String name, description, type;
   public int hp, x, y;
   public boolean passability;
-  Object (String n, String d, int h, int xx, int yy, String t, boolean p){
+  Object (String n, String d, int h, int xx, int yy, String t, boolean p){ //Конструктор
     name = n;
     description = d;
     hp = h;

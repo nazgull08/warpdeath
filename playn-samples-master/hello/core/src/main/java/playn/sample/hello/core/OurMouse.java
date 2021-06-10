@@ -85,12 +85,9 @@ public class OurMouse {
   static public void movingClickMouseHud(Object[] objectArr, Mouse.ButtonEvent event ,Unit selectedUnit, Sound[] landSounds, World w) {
     //int obposx = (int) ((event.x() - w.shipPositionX) / w.floorw);
     //int obposy = (int) ((event.y() - w.shipPositionY) / w.floorh);
-    Position dataPos = fromIsometric((int)event.x(),(int)event.y(),w);
-    boolean nowall = false;
-    boolean noobj = true;
     if(dataPos.y >= w.hudy)
     {
-
+      landSounds[1].play();
     }
   }
 

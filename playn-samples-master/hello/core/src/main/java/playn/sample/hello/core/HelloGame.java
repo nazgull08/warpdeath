@@ -911,7 +911,22 @@ public class HelloGame extends SceneGame {
       mainOST.play();
 
 
+      plat.input().mouseEvents.connect(new Mouse.ButtonSlot() {
+        public void onEmit (Mouse.ButtonEvent event)
+        {
+          if(event.down)
+          {
+            if(selectedUnit!=(-1))
+            {
+              if(event.button == Mouse.ButtonEvent.Id.RIGHT)
+              {
+                OurMouse.movingClickMouseHud(objectArr,event ,squad[selectedUnit],landSounds, w);
 
+              }
+            }
+          }
+        };
+      });
 //------------------------------------------------------------- CLICK!!!!----
     plat.input().mouseEvents.connect(new Mouse.ButtonSlot() {
       public void onEmit (Mouse.ButtonEvent event)
