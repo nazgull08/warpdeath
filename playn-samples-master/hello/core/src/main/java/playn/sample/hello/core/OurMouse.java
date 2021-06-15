@@ -85,10 +85,10 @@ public class OurMouse {
   static public void movingClickMouseHud(Object[] objectArr, Mouse.ButtonEvent event ,Unit selectedUnit, Sound[] landSounds, World w) {
     //int obposx = (int) ((event.x() - w.shipPositionX) / w.floorw);
     //int obposy = (int) ((event.y() - w.shipPositionY) / w.floorh);
-    if(dataPos.y >= w.hudy)
-    {
-      landSounds[1].play();
-    }
+    // if(dataPos.y >= w.hudy)
+    // {
+    //   landSounds[1].play();
+    // }
   }
 
   static public void cursorState(Mouse.MotionEvent event, IDimension size, World w)

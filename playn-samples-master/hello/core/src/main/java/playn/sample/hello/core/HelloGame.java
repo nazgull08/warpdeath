@@ -106,7 +106,7 @@ public class HelloGame extends SceneGame {
   boolean animation = true;
   boolean speakAnimation = true;
 
-  boolean keyUpDown, keyDownDown, keyLeftDown, keyRightDown, eDown, ctrlDown, tabDown, wDown, sDown, aDown, dDown, tDown;
+  boolean keyUpDown, keyDownDown, keyLeftDown, keyRightDown, eDown, ctrlDown, tabDown, wDown, qDown, sDown, aDown, dDown, tDown;
 
   Graphics gfx = plat.graphics();
 
@@ -214,6 +214,10 @@ public class HelloGame extends SceneGame {
     plat.assets().getSound("sounds/landSounds/nice"),
     plat.assets().getSound("sounds/landSounds/neat"),
   };
+  Sound[] fireSounds = new Sound[] {                      // создание и присваивание значений массиву звуков
+    plat.assets().getSound("sounds/fire/railgun"),
+
+  };
 
   GroupLayer Floorlayer = new GroupLayer(); //Создаем групповой слой корабля
   GroupLayer Squadlayer = new GroupLayer(); //Создаем групповой слой отряда
@@ -257,7 +261,7 @@ public class HelloGame extends SceneGame {
     {sWalFb, sFloor, sFloor, sFloor, sWalFb, sFloor, sFloor, sFloor, sWalFb},
     {sFloor, sFloor, sFloor, sFloor, sWalFb, sFloor, sFloor, sFloor, sWalFb},
     {sWalFb, sFloor, sFloor, sFloor, sWalFb, sFloor, sFloor, sFloor, sWalFb},
-    {sWalFb, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sFloor, sWalFb},
+    {sWalFb, sFloor, sFloor, sFloor, sFloor, sFloor, sWalFb, sFloor, sWalFb},
     {sWalFb, sFloor, sFloor, sFloor, sWalFb, sFloor, sFloor, sFloor, sWalFb},
     {sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb, sWalFb},
   };
@@ -1029,6 +1033,51 @@ public class HelloGame extends SceneGame {
            squad[0].actionPoints = actionPointsDef;
            break;
           }
+
+          case Q:
+          {
+           qDown = ev.down;
+           boolean nowall = true;
+           if(qDown)
+           {
+              for(int i = 0; i < squadLimit; i++)
+              {
+                if(((squad[selectedUnit].posx == squad[i].posx) && (selectedUnit != i))) //|| ((squad[selectedUnit].posy == squad[i].posy) && (selectedUnit != i)))
+                {
+                int k = squad[selectedUnit].posx;
+                System.out.printf("1\n");
+                System.out.printf("k %d\n", k);
+
+                  for(k = squad[selectedUnit].posy; k < (squad[i].posy+1); k++)
+                    {
+                      System.out.printf("k %d\n", k);
+
+                      for (int j = 0; j < w.objectLimit; j++)
+                      {
+                        if ((objectArr[j].x == squad[selectedUnit].posx) && (objectArr[j].y >= squad[selectedUnit].posy) && (objectArr[j].y <= squad[i].posy) )
+                        {
+                          System.out.printf("3\n");
+
+                          nowall = objectArr[j].passability;
+                          if(!nowall)
+                          {
+                            System.out.printf("2 %d\n",k);
+                          }
+                        }
+                      }
+                    }
+                  if(nowall)
+                  {
+                    fireSounds[0].setVolume(0.2f);
+                    fireSounds[0].play();
+                    squad[i].hp = squad[i].hp - 10;
+                    System.out.printf("squad[i].h: %d \n", squad[i].hp);
+                  }
+                  break;
+                }
+              }
+           }
+         }
 
           case T:
           {
