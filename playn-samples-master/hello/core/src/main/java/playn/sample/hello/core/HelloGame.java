@@ -743,7 +743,7 @@ public class HelloGame extends SceneGame {
 
     Unit tychus = new Unit("TТайкус","40","Танк",200,100, 6, 1, 142, 242, 20); //Создаем Тайкуса в c координатами 3 5
     Unit raynor = new Unit("PРейнор","40","ДД",150,150, 1, 1, 422, 144, 14); //Создаем Рейнора с координатами 0 2
-    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 3, 3, 11, 42, 7); //Создаем Рейнора с координатами 0 2
+    Unit ray = new Unit("Ray","40","Medic", 75 ,75, 7, 5, 11, 42, 7); //Создаем Рейнора с координатами 0 2
     Unit commissioner = new Unit("Commissioner","40","Commissioner",125 ,125, 6, 5, 10); //Создаем Рейнора с координатами 0 2
     Unit hollow = new Unit("Hollow"); //Создаем Рейнора с координатами 0 2
 
